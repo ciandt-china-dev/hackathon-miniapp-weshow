@@ -12,6 +12,9 @@
   padding: 10px 15px;
   border-right: 1px solid #eee;
 }
+.top-bar .scroll-view-item.active{
+  color:#1AAD16;
+}
 .top-bar .scroll-view-item:first-child{
   border-left: 1px solid #eee;
 }
@@ -54,6 +57,9 @@
 	width: 100px;
 	height: 30px;
 	display: block;
+}
+.hats .right-bar .scroll-view-item image{  
+	height: 60px;
 }
 .right-bar .widgets__info-name{
   margin-top: 5px;
