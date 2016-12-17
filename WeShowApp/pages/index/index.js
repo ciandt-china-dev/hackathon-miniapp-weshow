@@ -1,57 +1,45 @@
-// var order = ['green', 'red', 'yellow', 'blue', 'green']
 Page({
   data: {
     toView: 'red',
-    category:[{
-      id:'1',
-      name:'眼镜'
-    },{
-      id:'1',
-      name:'帽子'
-    },{
-      id:'1',
-      name:'上衣'
-    },{
-      id:'1',
-      name:'裤子'
-    },{
-      id:'1',
-      name:'连衣裙'
+    category: [{
+      id: '1',
+      name: '眼镜'
+    }, {
+      id: '2',
+      name: '帽子'
+    }, {
+      id: '3',
+      name: '上衣'
+    }, {
+      id: '4',
+      name: '裤子'
+    }, {
+      id: '5',
+      name: '连衣裙'
     }],
     glasses: [{
-      id: 'red',
-      name: '红色',
-      src: '../../images/glasses/glass01.png'
+      id: '0101',
+      src: '../../images/glasses/glasses0101.png'
     }, {
-      id: 'black',
-      name: '黑色',
-      src: '../../images/glasses/glass04.png'
-    },{
-      id: 'red',
-      name: '红色',
-      src: '../../images/glasses/glass01.png'
+      id: '0201',
+      src: '../../images/glasses/glasses0201.png'
     }, {
-      id: 'black',
-      name: '黑色',
-      src: '../../images/glasses/glass04.png'
-    },{
-      id: 'red',
-      name: '红色',
-      src: '../../images/glasses/glass01.png'
+      id: '0202',
+      src: '../../images/glasses/glasses0202.png'
     }, {
-      id: 'black',
-      name: '黑色',
-      src: '../../images/glasses/glass04.png'
-    },{
-      id: 'red',
-      name: '红色',
-      src: '../../images/glasses/glass01.png'
+      id: '0203',
+      src: '../../images/glasses/glasses0203.png'
     }, {
-      id: 'black',
-      name: '黑色',
-      src: '../../images/glasses/glass04.png'
+      id: '0204',
+      src: '../../images/glasses/glasses0204.png'
+    }, {
+      id: '0205',
+      src: '../../images/glasses/glasses0205.png'
+    }, {
+      id: '0206',
+      src: '../../images/glasses/glasses0206.png'
     }],
-    showRightBar: '' 
+    showRightBar: ''
   },
   upper: function(e) {
     console.log(e)
@@ -70,29 +58,13 @@ Page({
   selectGoods: function(e) {
     console.log(e)
   },
-  selectCategory: function(e){
+  selectCategory: function(e) {
     console.log(e);
   },
-  toggleRightBar: function(e){
-    var showRightBar = this.data.showRightBar ? '':'show';
-    this.setData({
-      showRightBar: showRightBar
-    });
-  }
-  // tap: function(e) {
-  //   for (var i = 0; i < order.length; ++i) {
-  //     if (order[i] === this.data.toView) {
-  //       this.setData({
-  //         toView: order[i + 1],
-  //         scrollTop: (i + 1) * 200
-  //       })
-  //       break
-  //     }
-  //   }
-  // },
-  // tapMove: function(e) {
-  //   this.setData({
-  //     scrollTop: this.data.scrollTop + 10
-  //   })
-  // }
+  toggleRightBar: function(e) {
+      var showRightBar = (this.data.showRightBar ? '' : 'show');
+      this.setData({
+        showRightBar: showRightBar
+      });
+    }
 })
