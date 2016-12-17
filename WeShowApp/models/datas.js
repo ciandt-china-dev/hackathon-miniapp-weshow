@@ -1,18 +1,18 @@
 module.exports = {
     category: [{
-      id: '1',
+      id: 'glasses',
       name: '眼镜'
     }, {
-      id: '2',
+      id: 'hats',
       name: '帽子'
     }, {
-      id: '3',
+      id: 'coats',
       name: '上衣'
     }, {
-      id: '4',
+      id: 'pants',
       name: '裤子'
     }, {
-      id: '5',
+      id: 'dresses',
       name: '连衣裙'
     }],
     glasses: [{

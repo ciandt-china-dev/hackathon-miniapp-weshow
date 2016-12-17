@@ -14,7 +14,7 @@
       <scroll-view class="right-bar-scroll" scroll-y="true" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll"  scroll-top="{{scrollTop}}">
 
         <block wx:for-items="{{sidebar}}">
-            <view id="{{item.id}}" class="scroll-view-item" bindtap="selectGoods">
+            <view id="{{item.id}}" data-imgsrc="{{item.src}}" class="scroll-view-item" bindtap="selectGoods">
                 <image class="widgets__info-img" src="{{item.src}}" mode="aspectFill" />
             </view>
         </block>
