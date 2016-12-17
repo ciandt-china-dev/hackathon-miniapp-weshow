@@ -203,36 +203,41 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="image\Lib\cvextern.dll">
+    <Content Include="image\automatic\Lib\cvextern.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="image\Lib\Emgu.CV.UI.dll">
+    <Content Include="image\automatic\Lib\Emgu.CV.UI.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="image\Lib\Emgu.CV.World.dll">
+    <Content Include="image\automatic\Lib\Emgu.CV.World.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="image\Lib\glass.png">
+    <Content Include="image\automatic\Lib\glass.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="image\Lib\haarcascade_eye.xml">
+    <Content Include="image\automatic\Lib\haarcascade_eye.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="image\Lib\haarcascade_frontalface_default.xml">
+    <Content Include="image\automatic\Lib\haarcascade_frontalface_default.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="image\Lib\msvcp120.dll">
+    <Content Include="image\automatic\Lib\haarcascade_mcs_mouth.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="image\Lib\msvcr120.dll">
+    <Content Include="image\automatic\Lib\hat.jpg" />
+    <Content Include="image\automatic\Lib\msvcp120.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="image\Lib\opencv_ffmpeg310.dll">
+    <Content Include="image\automatic\Lib\msvcr120.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="image\Lib\opencv_ffmpeg310_64.dll">
+    <Content Include="image\automatic\Lib\opencv_ffmpeg310.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="image\automatic\Lib\opencv_ffmpeg310_64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="image\automatic\Lib\pig.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -260,7 +265,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="image\ImageTemp\" />
+    <Folder Include="image\automatic\ImageTemp\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
