@@ -93,6 +93,9 @@
     </Content>
     <Content Include="Lib\Emgu.CV.UI.dll" />
     <Content Include="Lib\Emgu.CV.World.dll" />
+    <Content Include="Lib\haarcascade_eye.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
