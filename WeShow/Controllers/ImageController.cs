@@ -86,7 +86,7 @@ namespace WeShow.Controllers
                     Bitmap AddHatImageResult = new Bitmap(hatFrame.Width, hatFrame.Height);
                     using (Graphics g = Graphics.FromImage(imageResult))
                     {
-                        RectangleF rect = new RectangleF(resultRactangles[0].X - (int)(resultRactangles[0].Width / 4.5), resultRactangles[0].Y - (int)(resultRactangles[0].Height / 1.5), (int)(resultRactangles[0].Width * 1.25), resultRactangles[0].Height);
+                        RectangleF rect = new RectangleF(resultRactangles[0].X - (int)(resultRactangles[0].Width / 7.5), resultRactangles[0].Y - (int)(resultRactangles[0].Height / 1.5), (int)(resultRactangles[0].Width * 1.25), resultRactangles[0].Height);
                         g.DrawImage(hatFrame.Bitmap, 0, 0);
                         var hatImage = imageHat.Bitmap;
                         hatImage.MakeTransparent();
