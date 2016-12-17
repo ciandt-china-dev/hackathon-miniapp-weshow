@@ -4,7 +4,7 @@
 .top-bar{
   border-bottom:2px solid #1AAD16;
   text-align: center;
-  height: 36px;
+  height: 38px;
 }
 
 .top-bar .scroll-view-item{
