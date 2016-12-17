@@ -138,9 +138,9 @@ module.exports = {
                         -stuff.height/2);
 
 
-                    context.arc(0,0,10,0,2*Math.PI);
                     context.setFillStyle("#ff0000");
                     context.setStrokeStyle("#ff0000");
+                    context.arc(0,0,10,0,2*Math.PI);
                     context.fill();
                     context.stroke();
 
@@ -149,8 +149,6 @@ module.exports = {
                         stuff.height);
 
                     context.arc(0,0,10,0,2*Math.PI);
-                    context.setFillStyle("#ff0000");
-                    context.setStrokeStyle("#ff0000");
                     context.fill();
                     context.stroke();
                     context.closePath();
@@ -158,23 +156,25 @@ module.exports = {
 
                     context.beginPath();
                     context.setStrokeStyle("#ff0000");
+                    context.setFillStyle("#ff0000");
                     context.translate(
                         -stuff.width,
                         -stuff.height);
+
                     context.rect(
                         0,0,
                         stuff.width,
                         stuff.height
                         );
-
+                    context.stroke();
                     context.drawImage(
                         stuff.imgsrc,
                         0,0,
                         stuff.width,
                         stuff.height
                     );
-
                     context.stroke();
+
                     context.translate(
                         -stuff.curX,
                         -stuff.curY);
