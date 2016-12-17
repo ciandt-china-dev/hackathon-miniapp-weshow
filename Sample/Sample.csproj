@@ -91,11 +91,14 @@
     <Content Include="images\1.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Lib\cvextern.dll" />
     <Content Include="Lib\Emgu.CV.UI.dll" />
     <Content Include="Lib\Emgu.CV.World.dll" />
-    <Content Include="Lib\haarcascade_eye.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Lib\haarcascade_eye.xml" />
+    <Content Include="Lib\msvcp120.dll" />
+    <Content Include="Lib\msvcr120.dll" />
+    <Content Include="Lib\opencv_ffmpeg310.dll" />
+    <Content Include="Lib\opencv_ffmpeg310_64.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
