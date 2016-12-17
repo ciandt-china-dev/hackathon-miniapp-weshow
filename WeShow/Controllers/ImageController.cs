@@ -1,51 +1,96 @@
-﻿using System;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Results;
+using WeShow.Results;
 
 namespace WeShow.Controllers
 {
     public class ImageController : ApiController
     {
+        private string imageRoot = "imageTemp";
         // GET: Image
         [HttpPost]
-        [Route("/api/image/automatic")]
+        [Route("image/automatic")]
         public HttpResponseMessage Index()
         {
             //文件保存目录路径 
-            string SaveTempPath = "/imageTemp";
-            String dirTempPath = HttpContext.Current.Server.MapPath(SaveTempPath);
-            var provider = new MultipartFormDataStreamProvider(dirTempPath);
-            var task = Request.Content.ReadAsMultipartAsync(provider).ContinueWith(m => {
-                var file = provider.FileData[0];
-                
-                string orfilename = file.Headers.ContentDisposition.FileName.TrimStart('"').TrimEnd('"');
-                FileInfo fileinfo = new FileInfo(file.LocalFileName);
-                String ymd = DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                String newFileName = DateTime.Now.ToString("yyyyMMddHHmmss_ffff", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                string fileExt = orfilename.Substring(orfilename.LastIndexOf('.'));
-                fileinfo.CopyTo(Path.Combine(dirTempPath, newFileName + fileExt), true);
-                fileinfo.Delete();
-            });
-           
-            var imgPath = @"11";
-            //从图片中读取byte
-            var imgByte = File.ReadAllBytes(imgPath);
-            //从图片中读取流
-            var imgStream = new MemoryStream(File.ReadAllBytes(imgPath));
-            var resp = new HttpResponseMessage(HttpStatusCode.OK)
+            HttpPostedFile file=null;
+            if(!GetUploadImage(file))
             {
-                Content = new ByteArrayContent(imgByte)
-                //或者
-                //Content = new StreamContent(stream)
-            };
-            resp.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpg");
-            return resp;
+                return new JsonResult(new SampleResult() { Status = 2, Data = "上传文件出错" });
+            }
+
+            CascadeClassifier haar = new CascadeClassifier(GetServerPath("Lib/haarcascade_eye.xml"));    //初始化分类器
+
+            Image<Bgr, byte> frame = new Image<Bgr, byte>(GetServerPath(Path.Combine(imageRoot, file.FileName)));  //加载上传的图片
+
+            List<Rectangle> Rectangles = GetEyesByImage(haar, frame);
+
+
+            Image<Bgr, Byte> imageGlass = new Image<Bgr, byte>(GetServerPath(@"Lib/glass.png"));
+            if (Rectangles.Count != 2)
+            {
+                return new JsonResult(new SampleResult() { Status = 2, Data = "未能正确识别人眼" });
+            }
+            Bitmap imageResult = new Bitmap(frame.Width, frame.Height);
+            using (Graphics g = Graphics.FromImage(imageResult))
+            {
+                RectangleF rect = new RectangleF(Rectangles[0].X, Rectangles[0].Y, Rectangles[1].X - Rectangles[0].X + Rectangles[1].Width, Rectangles[0].Height);
+                g.DrawImage(frame.Bitmap, 0, 0);
+                var glass = imageGlass.Bitmap;
+                glass.MakeTransparent();
+                g.DrawImage(glass, rect);
+
+            }
+            imageResult.Save(GetServerPath(Path.Combine(imageRoot, file.FileName)));
+            //HttpResponseMessage result = new HttpResponseMessage { Content = new StringContent(Path.Combine("/image/", imageRoot, file.FileName), Encoding.GetEncoding("UTF-8"), "application/json") };
+            return new JsonResult(new SampleResult() { Status = 1, Data = Path.Combine("image", Path.Combine(imageRoot, file.FileName)) });
+        }
+
+        private static List<Rectangle> GetEyesByImage(CascadeClassifier haar, Image<Bgr, byte> frame)
+        {
+            Rectangle[] results = haar.DetectMultiScale(frame, 1.3, 3, new System.Drawing.Size(10, 10));
+            //检测并将数据储存
+            List<Rectangle> Rectangles = new List<Rectangle>(2);
+            foreach (Rectangle Rectangle in results)
+            {
+
+                //CvInvoke.Rectangle(frame, result, new Bgr(Color.Red).MCvScalar, 2);  //在检测到的区域绘制红框
+
+                Rectangles.Add(Rectangle);
+            }
+
+            return Rectangles;
+        }
+
+        private bool GetUploadImage(HttpPostedFile file)
+        {
+            var files = HttpContext.Current.Request.Files;
+            if(files.Count!=1)
+            {
+                return false;
+            }
+            var f= files[0];
+            // 文件安全验证...
+            file = f;
+            file.SaveAs(HttpContext.Current.Server.MapPath(Path.Combine(imageRoot, f.FileName)));
+            return true;
+        }
+
+        private string GetServerPath(string path)
+        {
+            return HttpContext.Current.Server.MapPath(path);
         }
     }
 }
