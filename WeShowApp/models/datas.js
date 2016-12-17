@@ -1,18 +1,23 @@
 module.exports = {
     category: [{
       id: 'glasses',
+      height:30,
       name: '眼镜'
     }, {
       id: 'hats',
+      height:60,
       name: '帽子'
     }, {
       id: 'coats',
+      height:60,
       name: '上衣'
     }, {
       id: 'pants',
+      height:60,
       name: '裤子'
     }, {
       id: 'dresses',
+      height:60,
       name: '连衣裙'
     }],
     glasses: [{

@@ -9,7 +9,7 @@ Page({
     categorys: data.category,
     showRightBar: '',
     sidebar: data.glasses,
-    selectedCategory: 'glasses'
+    selectedCategory: data.category[0]
   },
   onReady:function(){
     glass.setPage(this);
@@ -31,28 +31,16 @@ Page({
   selectGoods: function(e) {
     console.log(e)
     var dt = e.currentTarget.dataset;
-    glass.addStuff(dt.imgsrc,200,100,100,50);
+    glass.addStuff(dt.imgsrc,200,100,100,this.data.selectedCategory.height);
   },
   selectCategory: function(e) {
-    var category = e.currentTarget.id,
-      categorys = this.data.categorys;
-
-    for (var i = 0, len = categorys.length; i < len; ++i) {
-      if (categorys[i].id == category) {
-        if(categorys[i].active == 'active'){
-          break;
-        }
-        categorys[i].active = 'active';
-      } else {
-        categorys[i].active = '';
-      }
-    }
+    var categorys = this.data.categorys;
+    var category = categorys[e.currentTarget.dataset.index];
 
     this.setData({
-        sidebar: data[category],
+        sidebar: data[category.id],
         selectedCategory: category,
         showRightBar:'show',
-        categorys:categorys
     });
   },
   toggleRightBar: function(e) {

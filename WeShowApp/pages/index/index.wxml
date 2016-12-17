@@ -1,9 +1,9 @@
 <view class="page">
-  <view class="page__bd {{selectedCategory}}">
+  <view class="page__bd {{selectedCategory.id}}">
     <view class="top-bar">
       <scroll-view scroll-y="true" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll" scroll-top="{{scrollTop}}">
         <block wx:for-items="{{categorys}}">
-            <view id="{{item.id}}" class="scroll-view-item {{item.active}}" bindtap="selectCategory">
+            <view id="{{item.id}}" data-index="{{index}}" class="scroll-view-item {{selectedCategory.id==item.id?'active':''}}" bindtap="selectCategory">
                 <text class="category-name">{{item.name}}</text>
             </view>
         </block>
@@ -14,8 +14,8 @@
       <scroll-view class="right-bar-scroll" scroll-y="true" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll"  scroll-top="{{scrollTop}}">
 
         <block wx:for-items="{{sidebar}}">
-            <view id="{{item.id}}" data-imgsrc="{{item.src}}" class="scroll-view-item" bindtap="selectGoods">
-                <image class="widgets__info-img" src="{{item.src}}" mode="aspectFill" />
+            <view id="{{item.id}}" data-imgsrc="{{item.src}}" data-imgHeight="{{item.height}}" class="scroll-view-item" bindtap="selectGoods">
+                <image class="widgets__info-img" src="{{item.src}}" mode="aspectFill"/>
             </view>
         </block>
        </scroll-view>
