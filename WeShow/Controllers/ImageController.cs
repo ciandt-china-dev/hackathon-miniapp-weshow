@@ -68,6 +68,7 @@ namespace WeShow.Controllers
                 if (imageResult == null)
                 {
                     hatFrame = new Image<Bgr, byte>(strImageFullPath);
+                    imageResult = hatFrame.Bitmap;
                 }
                 else
                 {
