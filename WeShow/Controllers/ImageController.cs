@@ -25,8 +25,8 @@ namespace WeShow.Controllers
         public HttpResponseMessage Index()
         {
             //文件保存目录路径 
-            HttpPostedFile file=null;
-            if(!GetUploadImage(file))
+            HttpPostedFile file = null;
+            if (!GetUploadImage(file))
             {
                 return new JsonResult(new SampleResult() { Status = 2, Data = "上传文件出错" });
             }
@@ -43,6 +43,15 @@ namespace WeShow.Controllers
             {
                 return new JsonResult(new SampleResult() { Status = 2, Data = "未能正确识别人眼" });
             }
+            SortRectangle(Rectangles);
+            Bitmap imageResult = GetUpdatedImage(frame, Rectangles, imageGlass);
+            imageResult.Save(GetServerPath(Path.Combine(imageRoot, file.FileName)));
+
+            return new JsonResult(new SampleResult() { Status = 1, Data = Path.Combine("image", Path.Combine(imageRoot, file.FileName)) });
+        }
+
+        private static Bitmap GetUpdatedImage(Image<Bgr, byte> frame, List<Rectangle> Rectangles, Image<Bgr, byte> imageGlass)
+        {
             Bitmap imageResult = new Bitmap(frame.Width, frame.Height);
             using (Graphics g = Graphics.FromImage(imageResult))
             {
@@ -53,9 +62,16 @@ namespace WeShow.Controllers
                 g.DrawImage(glass, rect);
 
             }
-            imageResult.Save(GetServerPath(Path.Combine(imageRoot, file.FileName)));
-            //HttpResponseMessage result = new HttpResponseMessage { Content = new StringContent(Path.Combine("/image/", imageRoot, file.FileName), Encoding.GetEncoding("UTF-8"), "application/json") };
-            return new JsonResult(new SampleResult() { Status = 1, Data = Path.Combine("image", Path.Combine(imageRoot, file.FileName)) });
+
+            return imageResult;
+        }
+
+        private static void SortRectangle(List<Rectangle> Rectangles)
+        {
+            if (Rectangles[0].X > Rectangles[1].X)
+            {
+                Rectangles.Reverse();
+            }
         }
 
         private static List<Rectangle> GetEyesByImage(CascadeClassifier haar, Image<Bgr, byte> frame)
