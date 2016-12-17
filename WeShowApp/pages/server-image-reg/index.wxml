@@ -20,6 +20,7 @@
        </scroll-view>
     </view>
     <view class="section content">
+    <button class="choose-image" bindtap="chooseImage">Chosse Image</button>
     </view>
   </view>
 </view>
