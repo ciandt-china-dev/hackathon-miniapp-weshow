@@ -155,9 +155,12 @@
     <Content Include="Lib\Emgu.CV.World.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Lib\glass.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Lib\glass_dark1.png" />
+    <Content Include="Lib\glass_dark2.png" />
+    <Content Include="Lib\glass_dark3.png" />
+    <Content Include="Lib\glass_light1.png" />
+    <Content Include="Lib\glass_light2.png" />
+    <Content Include="Lib\glass_light3.png" />
     <Content Include="Lib\haarcascade_eye.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -1,20 +1,26 @@
 Page({
   data: {
     toView: 'red',
-    category: [{
+    modalHidden: false,
+    categorys: [{
       id: '1',
+      key:'glass',
       name: '眼镜'
     }, {
       id: '2',
+      key:'hat',
       name: '帽子'
     }, {
       id: '3',
+      key:'coat',
       name: '上衣'
     }, {
       id: '4',
+      key:'pants',
       name: '裤子'
     }, {
       id: '5',
+      key:'dress',
       name: '连衣裙'
     }],
     glasses: [{
@@ -55,18 +61,42 @@ Page({
       scrollTop: 0
     })
   },
+  modalChange: function(e) {
+    this.setData({
+      modalHidden: true
+    })
+  },
   selectGoods: function(e) {
     console.log(e)
   },
   selectCategory: function(e) {
-    console.log(e);
-  },
-  toggleRightBar: function(e) {
-    var showRightBar = (this.data.showRightBar ? '' : 'show');
+    var category = e.currentTarget.id,
+      categorys = this.data.categorys;
+    console.log(categorys);
+    for (var i = 0, len = categorys.length; i < len; ++i) {
+      if (categorys[i].id == category) {
+        if(categorys[i].active == 'active'){
+          categorys[i].active = '';
+        }else{
+          categorys[i].active = 'active';
+        }
+        break;
+      }
+    }
+
     this.setData({
-      showRightBar: showRightBar
+        //sidebar: data[category],
+        //selectedCategory: category,
+        //showRightBar:'show',
+        categorys:categorys
     });
   },
+  // toggleRightBar: function(e) {
+  //   var showRightBar = (this.data.showRightBar ? '' : 'show');
+  //   this.setData({
+  //     showRightBar: showRightBar
+  //   });
+  // },
   chooseImage: function(e){
     var that = this
     wx.chooseImage({
@@ -74,16 +104,31 @@ Page({
       sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
       sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
       success: function success(res) {
+        wx.showToast({
+          title: '图片上传中',
+          icon: 'loading',
+          duration: 10000
+        })
+
+        setTimeout(function(){
+          wx.hideToast()
+        },10000)
         wx.uploadFile({
           url: 'https://weshow.nbhanyi.com/glass,hat', //仅为示例，非真实的接口地址
           filePath: res.tempFilePaths[0],
           name: 'file',
           formData:{},
           success: function(res){
-            var filePath = 'https://weshow.nbhanyi.com/' + res.Data
-            that.setData({
-              tempFilePath: filePath
+            var filePath = 'https://weshow.nbhanyi.com/' + res.data
+            // that.setData({
+            //   tempFilePath: filePath
+            // })
+            console.log(filePath)
+            wx.previewImage({
+              current: filePath, // 当前显示图片的http链接
+              urls: [filePath] // 需要预览的图片http链接列表
             })
+            wx.hideToast()
           }
         })
       }

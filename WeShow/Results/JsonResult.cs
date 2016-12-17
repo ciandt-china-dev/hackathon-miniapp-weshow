@@ -7,11 +7,11 @@ using System.Web;
 
 namespace WeShow.Results
 {
-    public class JsonResult: HttpResponseMessage
+    public class JsonResult : HttpResponseMessage
     {
-        public JsonResult(object result)
+        public JsonResult(string result)
         {
-            this.Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(result), Encoding.GetEncoding("UTF-8"), "application/json");
+            this.Content = new StringContent(result.Replace('\\', '/'), Encoding.GetEncoding("UTF-8"), "application/json");
         }
     }
 }

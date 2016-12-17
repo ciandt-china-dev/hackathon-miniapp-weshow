@@ -15,6 +15,10 @@
 .top-bar .scroll-view-item:first-child{
   border-left: 1px solid #eee;
 }
+.top-bar .scroll-view-item.active{
+  background:rgba(26, 173, 22, 0.65);
+  font-weight: bold;
+}
 .right-bar{
   width:146px;
   position: fixed;

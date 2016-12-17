@@ -236,14 +236,15 @@ namespace WeShow.Controllers
                 CovertRectangleToBitmap(result, image);
                 var brightness = GetImageBrightness(image);
 
+                Random r = new Random();
                 if (brightness < 0.63)
                 {
                     ///黑皮肤
-                    return new Image<Bgr, byte>(GetServerPath(@"Lib\glass.png"));
+                    return new Image<Bgr, byte>(GetServerPath($"Lib\\glass_light{r.Next(1,3).ToString()}.png"));
                 }
                 else
                 {
-                    return new Image<Bgr, byte>(GetServerPath(@"Lib\glass.png"));
+                    return new Image<Bgr, byte>(GetServerPath($"Lib\\glass_dark{r.Next(1,3).ToString()}.png"));
                 }
             }
             else
