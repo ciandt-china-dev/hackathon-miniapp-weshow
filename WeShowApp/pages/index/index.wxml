@@ -11,7 +11,7 @@
     </view>
     <view class="section right-bar {{showRightBar}}">
       <text class="toggle-right-bar" bindtap="toggleRightBar">《</text>
-      <scroll-view class="right-bar-scroll" scroll-y="true" style="height: 450px;" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll"  scroll-top="{{scrollTop}}">
+      <scroll-view class="right-bar-scroll" scroll-y="true" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll"  scroll-top="{{scrollTop}}">
         <block wx:for-items="{{glasses}}">
             <view id="{{item.id}}" class="scroll-view-item" bindtap="selectGoods">
                 <image class="widgets__info-img" src="{{item.src}}" mode="aspectFill" />
