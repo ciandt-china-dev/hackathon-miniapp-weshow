@@ -20,7 +20,10 @@
        </scroll-view>
     </view>
     <view class="section content">
-    <button class="choose-image" bindtap="chooseImage">Chosse Image</button>
+      <button class="choose-image" bindtap="chooseImage">Chosse Image</button>
+      <view class="base-image">
+          <image src="{{tempFilePath}}" mode="aspectFill" />
+      </view>
     </view>
   </view>
 </view>

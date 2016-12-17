@@ -64,6 +64,11 @@
   background: #f6f8f9;
 }
 
+.base-image image{
+	width: 100%;
+	height: 100%;
+	display: block;
+}
 .scroll-view-item_H{
   display: inline-block;
 }

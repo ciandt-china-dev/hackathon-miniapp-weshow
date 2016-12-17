@@ -22,17 +22,17 @@ namespace Sample
 
         private void button1_Click(object sender, EventArgs e)
         {
-            CascadeClassifier haar = new CascadeClassifier("haarcascade_eye.xml");    //初始化分类器
-            Image<Bgr, Byte> imageGlass = new Image<Bgr, byte>(@"images\\glass.png");
-            Image<Bgr, byte> frame = new Image<Bgr, byte>(@"images\\8.PNG");
-            Rectangle[] resultRactangles = haar.DetectMultiScale(frame, 1.3, 3, new System.Drawing.Size(10, 10));
+            CascadeClassifier haar = new CascadeClassifier("haarcascade_frontalface_default.xml");    //初始化分类器
+            Image<Bgr, Byte> imageHat = new Image<Bgr, byte>(@"images\\hat.png");
+            Image<Bgr, byte> frame = new Image<Bgr, byte>(@"images\\" + textBox1.Text + ".PNG");
+            Rectangle[] resultRactangles = haar.DetectMultiScale(frame, 1.1, 10, new System.Drawing.Size(10, 10));
             //检测并将数据储存
             Bitmap imageResult = new Bitmap(frame.Width, frame.Height);
             using (Graphics g = Graphics.FromImage(imageResult))
             {
-                RectangleF rect = new RectangleF(resultRactangles[0].X, resultRactangles[0].Y, resultRactangles[1].X - resultRactangles[0].X + resultRactangles[1].Width, resultRactangles[0].Height);
+                RectangleF rect = new RectangleF(resultRactangles[0].X - (int)(resultRactangles[0].Width / 4.5), resultRactangles[0].Y - (int)(resultRactangles[0].Height / 1.5), (int)(resultRactangles[0].Width * 1.25), resultRactangles[0].Height);
                 g.DrawImage(frame.Bitmap, 0, 0);
-                var glass = imageGlass.Bitmap;
+                var glass = imageHat.Bitmap;
                 glass.MakeTransparent();
                 g.DrawImage(glass, rect);
             }

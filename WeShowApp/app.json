@@ -1,8 +1,8 @@
 {
   "pages":[
+    "pages/server-image-reg/index",
     "pages/index/index",
-    "pages/canvas/canvas",
-    "pages/server-image-reg/index"
+    "pages/canvas/canvas"
   ],
   "window":{
     "backgroundTextStyle":"light",  
