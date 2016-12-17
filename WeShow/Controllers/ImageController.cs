@@ -37,17 +37,14 @@ namespace WeShow.Controllers
             Image<Bgr, byte> frame = new Image<Bgr, byte>(serverImageRoot);  //加载上传的图片
 
             List<Rectangle> Rectangles = GetEyesByImage(haar, frame);
-            foreach (var Rectangle in Rectangles)
-            {
-
-            }
+          
 
             Image<Bgr, Byte> imageGlass = ChooseGlass(serverImageRoot);
-            if (Rectangles.Count < 2|| Rectangles.Count>3)
+            if (Rectangles.Count < 2|| Rectangles.Count>5)
             {
                 return new JsonResult(new SampleResult() { Status = 2, Data = "我现在还不够聪明，需要钱来改善我的基因" });
             }
-            if(Rectangles.Count ==3)
+            if(Rectangles.Count !=2)
             {
                 ExecuteWhenRectangleCountEquals3(Rectangles);
             }
@@ -60,29 +57,36 @@ namespace WeShow.Controllers
 
         private static void ExecuteWhenRectangleCountEquals3(List<Rectangle> Rectangles)
         {
-            var eyewidth0 = Rectangles[0].Width;
-            var eyewidth1 = Rectangles[1].Width;
-            var eyewidth2 = Rectangles[2].Width;
-            List<int> betweenArry = new List<int>();
-            var between0and1 = Math.Abs(Rectangles[0].Width - Rectangles[1].Width);
-            betweenArry.Add(between0and1);
-            var between0and2 = Math.Abs(Rectangles[0].Width - Rectangles[2].Width);
-            betweenArry.Add(between0and2);
-            var between1and2 = Math.Abs(Rectangles[1].Width - Rectangles[2].Width);
-            betweenArry.Add(between1and2);
-            var minBetween = betweenArry.Min();
-            if (between0and1 == minBetween)
+            //var eyewidth0 = Rectangles[0].Width;
+            //var eyewidth1 = Rectangles[1].Width;
+            //var eyewidth2 = Rectangles[2].Width;
+            //List<int> betweenArry = new List<int>();
+            //var between0and1 = Math.Abs(Rectangles[0].Width - Rectangles[1].Width);
+            //betweenArry.Add(between0and1);
+            //var between0and2 = Math.Abs(Rectangles[0].Width - Rectangles[2].Width);
+            //betweenArry.Add(between0and2);
+            //var between1and2 = Math.Abs(Rectangles[1].Width - Rectangles[2].Width);
+            //betweenArry.Add(between1and2);
+            //var minBetween = betweenArry.Min();
+            //if (between0and1 == minBetween)
+            //{
+            //    Rectangles.RemoveAt(2);
+            //}
+            //else if (between0and2 == minBetween)
+            //{
+            //    Rectangles.RemoveAt(1);
+            //}
+            //else
+            //{
+            //    Rectangles.RemoveAt(0);
+            //}
+            while(Rectangles.Count>2)
             {
-                Rectangles.RemoveAt(2);
+                var maxHeight= Rectangles.Max(m => m.Height);
+                var current = Rectangles.First(m => m.Height == maxHeight);
+                Rectangles.Remove(current);
             }
-            else if (between0and2 == minBetween)
-            {
-                Rectangles.RemoveAt(1);
-            }
-            else
-            {
-                Rectangles.RemoveAt(0);
-            }
+           
         }
 
         private static Bitmap GetUpdatedImage(Image<Bgr, byte> frame, List<Rectangle> Rectangles, Image<Bgr, byte> imageGlass)
