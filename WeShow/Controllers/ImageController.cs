@@ -32,7 +32,7 @@ namespace WeShow.Controllers
                 if (string.IsNullOrEmpty(option) || !GetUploadImage(out file))
                 {
                     // 这里直接返回猪头
-                    return new JsonResult(new SampleResult() { Status = 1, Data = "Lib/pig.jpg" });
+                    return new JsonResult( "Lib/pig.jpg" );
                 }
 
                 var optionArray = option.Split(',');
@@ -52,7 +52,7 @@ namespace WeShow.Controllers
                     Image<Bgr, Byte> imageGlass = ChooseGlass(strImageFullPath);
                     if (Rectangles.Count < 2 || Rectangles.Count > 5)
                     {
-                        return new JsonResult(new SampleResult() { Status = 2, Data = "Lib/pig.jpg" });
+                        return new JsonResult("Lib/pig.jpg" );
                     }
                     if (Rectangles.Count == 3)
                     {
@@ -85,7 +85,7 @@ namespace WeShow.Controllers
                     //检测并将数据储存
                     if (resultRactangles.Count() != 1)
                     {
-                        return new JsonResult(new SampleResult() { Status = 2, Data = "Lib/pig.jpg" });
+                        return new JsonResult("Lib/pig.jpg" );
                     }
                     Bitmap AddHatImageResult = new Bitmap(hatFrame.Width, hatFrame.Height);
                     using (Graphics g = Graphics.FromImage(imageResult))
@@ -106,7 +106,7 @@ namespace WeShow.Controllers
             }
             catch(Exception e)
             {
-                return  new JsonResult(new SampleResult() { Status = 2, Data = e.ToString() });
+                return  new JsonResult( e.ToString() );
             }
             
 
@@ -126,7 +126,7 @@ namespace WeShow.Controllers
         {
             imageResult.Save(strImageFullPath);
 
-            return new JsonResult(new SampleResult() { Status = 1, Data = Path.Combine(Path.Combine(strImageRootPath, strImageFileName)) });
+            return new JsonResult( Path.Combine(Path.Combine(strImageRootPath, strImageFileName)) );
         }
 
         #endregion
