@@ -167,6 +167,10 @@
     <Content Include="Lib\haarcascade_mcs_mouth.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Lib\hat_dark1.png" />
+    <Content Include="Lib\hat_dark2.png" />
+    <Content Include="Lib\hat_dark3.png" />
+    <Content Include="Lib\hat_light.png" />
     <Content Include="Lib\msvcp120.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
