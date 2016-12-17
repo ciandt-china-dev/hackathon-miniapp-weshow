@@ -57,7 +57,7 @@ namespace Sample
             return colors.Average(color => color.GetBrightness());
         }
 
-        public Bitmap CovertToBitmap(Rectangle sourceRect, Bitmap image)
+        public Bitmap CovertRectangleToBitmap(Rectangle sourceRect, Bitmap image)
         {
             using (var bmp = new Bitmap((int)sourceRect.Width, (int)sourceRect.Height))
             {
@@ -79,7 +79,7 @@ namespace Sample
             {
                 //CvInvoke.Rectangle(frame, result, new Bgr(Color.Red).MCvScalar, 2);
                 var image = frame.Bitmap;
-                CovertToBitmap(result, image);
+                CovertRectangleToBitmap(result, image);
                 var brightness = GetImageBrightness(image);
                 MessageBox.Show(GetImageBrightness(image).ToString());
                 if (brightness < 0.63)
