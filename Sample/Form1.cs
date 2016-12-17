@@ -65,7 +65,6 @@ namespace Sample
                 {
                     graphics.DrawImage(image, 0.0f, 0.0f, sourceRect, GraphicsUnit.Pixel);
                 }
-                bmp.Save("test.jpg");
                 return bmp;
             }
         }
