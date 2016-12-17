@@ -17,7 +17,7 @@
 }
 .right-bar{
   width:146px;
-  position: fixed;
+  position: absolute;
   right: -120px;
 }
 .right-bar.show{
@@ -66,4 +66,9 @@
 
 .scroll-view-item_H{
   display: inline-block;
+}
+
+.cavans_content{
+    height:1000rpx;
+    width:750rpx;
 }

@@ -1,5 +1,8 @@
+
+var glass = require("../../models/glass").glass();
 Page({
   data: {
+    glass:glass,
     toView: 'red',
     category: [{
       id: '1',
@@ -41,6 +44,9 @@ Page({
     }],
     showRightBar: ''
   },
+  onReady:function(){
+    glass.setPage(this);
+  },
   upper: function(e) {
     console.log(e)
   },
@@ -57,6 +63,8 @@ Page({
   },
   selectGoods: function(e) {
     console.log(e)
+    var dt = e.currentTarget.dataset;
+    glass.addStuff(dt.imgsrc,200,100,100,50);
   },
   selectCategory: function(e) {
     console.log(e);
@@ -66,5 +74,47 @@ Page({
       this.setData({
         showRightBar: showRightBar
       });
+    },
+      
+  touchstart:function(e){
+    glass.touchTimeStamp = e.timeStamp;
+    glass.touchesLength = e.touches.length;
+
+    if(e.touches.length==1){
+      var point = e.touches[0];
+      glass.isTouched(point);
     }
+
+    glass.update();
+  },
+  touchmove:function(e){
+    var point = e.changedTouches[0];
+    if(glass.curStuff){
+      if(glass.curStuff.scale){
+          glass.scaleTo(point);
+      }
+      else if(glass.curStuff.touched){
+          glass.moveTo(point);
+      }
+    }
+
+    glass.update();
+  },
+  touchend:function(e){
+    console.log("touchend");
+    glass.touchesLength = e.touches.length;
+    if(e.timeStamp-glass.touchTimeStamp<500){
+      if(!glass.curStuff) glass.changeBackGroundImage();
+    }
+    glass.touchEnd();
+    
+  },
+  touchcancel:function(){
+    console.log("touchcancel");
+    glass.touchEnd();
+  },
+  toucherror:function(){
+    console.log("toucherror");
+    glass.touchEnd();
+  }
 })

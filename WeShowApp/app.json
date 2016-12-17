@@ -1,7 +1,7 @@
 {
   "pages":[
-    "pages/server-image-reg/index",
     "pages/index/index",
+    "pages/server-image-reg/index",
     "pages/canvas/canvas"
   ],
   "window":{

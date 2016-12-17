@@ -8,21 +8,24 @@ module.exports = {
             canvasHeight:app.globalData.window.height,
             backgroundImage:"",
             lastUpdate:0,
-            stuffs:[{
-                curX:150,
-                curY:75,
-                centerX:200,
-                centerY:100,
-                width:100,
-                height:50,
-                touched:false,
-                page:null,
-                scale:false,
-                touchesLength:0,
-                degree:0,
-            }],
-            curStuff:false,
+            page:null,
 
+            stuffs:[
+            // {
+            //     curX:150,
+            //     curY:75,
+            //     centerX:200,
+            //     centerY:100,
+            //     width:100,
+            //     height:50,
+            //     touched:false,
+            //     scale:false,
+            //     imgsrc:'',
+            //     degree:0,
+            // }
+
+            ],
+            curStuff:false,
             setPage:function(page){
                 this.page = page;
                 
@@ -57,6 +60,18 @@ module.exports = {
                         }
                     });
             },
+            addStuff:function(imgsrc,centerX,centerY,width,height){
+                this.stuffs.push({
+                    imgsrc:imgsrc,
+                    centerX:centerX,
+                    centerY:centerY,
+                    width:width,
+                    height:height,
+                    curX:centerX-width/2,
+                    curY:centerY-height/2,
+                });
+                this.update();
+            },
             inRect:function(point,stuff){
                 var x = point.x,y=point.y;
                 if(x>stuff.curX&&x<stuff.curX+stuff.width
@@ -81,7 +96,7 @@ module.exports = {
             },
             moveTo:function(point){
                 if(!this.curStuff)return false;
-                console.log('move to',point);
+                //console.log('move to',point);
                 this.curStuff.centerX = point.x;
                 this.curStuff.centerY = point.y;
                 this.curStuff.curX = this.curStuff.centerX-this.curStuff.width/2;
@@ -89,7 +104,7 @@ module.exports = {
             },
             scaleTo:function(point){
                 if(!this.curStuff)return false;
-                console.log('scale to',point);
+                //console.log('scale to',point);
                 this.curStuff.width = Math.abs(point.x-this.curStuff.curX);
                 this.curStuff.height = Math.abs(point.y-this.curStuff.curY);
                 this.curStuff.centerX = this.curStuff.curX+this.curStuff.width/2;
@@ -113,18 +128,11 @@ module.exports = {
                     var stuff = this.stuffs[i];
 
                     console.log(stuff);
+                    context.beginPath()
                     context.translate(
                         stuff.centerX,
                         stuff.centerY);
                     context.rotate(stuff.degree);
-
-                    context.drawImage(
-                        "../../images/glass.png",
-                        -stuff.width/2,
-                        -stuff.height/2,
-                        stuff.width,
-                        stuff.height
-                    );
                     context.translate(
                         -stuff.width/2,
                         -stuff.height/2);
@@ -145,8 +153,11 @@ module.exports = {
                     context.setStrokeStyle("#ff0000");
                     context.fill();
                     context.stroke();
+                    context.closePath();
 
-                    
+
+                    context.beginPath();
+                    context.setStrokeStyle("#ff0000");
                     context.translate(
                         -stuff.width,
                         -stuff.height);
@@ -156,7 +167,18 @@ module.exports = {
                         stuff.height
                         );
 
+                    context.drawImage(
+                        stuff.imgsrc,
+                        0,0,
+                        stuff.width,
+                        stuff.height
+                    );
+
                     context.stroke();
+                    context.translate(
+                        -stuff.curX,
+                        -stuff.curY);
+                    context.closePath();
                 }
 
                 
