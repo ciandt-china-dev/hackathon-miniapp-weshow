@@ -229,7 +229,7 @@ namespace WeShow.Controllers
             Image<Bgr, byte> frame = new Image<Bgr, byte>(imagePath);
             Rectangle[] results = haar.DetectMultiScale(frame, 1.3, 3, new System.Drawing.Size(10, 10));
             //检测并将数据储存
-            if (results.Count() > 1)
+            if (results.Count() >= 1)
             {
                 Rectangle result = results[0];
                 var image = frame.Bitmap;
@@ -294,7 +294,7 @@ namespace WeShow.Controllers
             Image<Bgr, byte> frame = new Image<Bgr, byte>(imagePath);
             Rectangle[] results = haar.DetectMultiScale(frame, 1.3, 3, new System.Drawing.Size(10, 10));
             //检测并将数据储存
-            if (results.Count() > 1)
+            if (results.Count() >= 1)
             {
                 Rectangle result = results[0];
                 var image = frame.Bitmap;
@@ -303,17 +303,19 @@ namespace WeShow.Controllers
 
                 if (brightness < 0.63)
                 {
+                    
                     ///黑皮肤
-                    return new Image<Bgr, byte>(GetServerPath(@"Lib\hat.png"));
+                    return new Image<Bgr, byte>(GetServerPath(@"Lib\hat_light.png"));
                 }
                 else
                 {
-                    return new Image<Bgr, byte>(GetServerPath(@"Lib\hat.png"));
+                    Random r = new Random();
+                    return new Image<Bgr, byte>(GetServerPath($"Lib\\hat_dark{r.Next(1,4).ToString()}.png"));
                 }
             }
             else
             {
-                return new Image<Bgr, byte>(GetServerPath(@"Lib\hat.png"));
+                return new Image<Bgr, byte>(GetServerPath(@"Lib\hat_light"));
             }
 
 
