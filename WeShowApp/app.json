@@ -1,7 +1,7 @@
 {
   "pages":[
-    "pages/server-image-reg/index",
     "pages/index/index",
+    "pages/server-image-reg/index",
     "pages/canvas/canvas"
   ],
   "window":{
@@ -30,8 +30,8 @@
   "networkTimeout": {
     "request": 10000,
     "connectSocket": 10000,
-    "uploadFile": 10000,
-    "downloadFile": 10000
+    "uploadFile": 20000,
+    "downloadFile": 20000
   },
   "debug": true
 }

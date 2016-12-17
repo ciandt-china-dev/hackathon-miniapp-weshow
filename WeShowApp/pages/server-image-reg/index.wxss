@@ -5,6 +5,7 @@
   border-bottom:2px solid #1AAD16;
   text-align: center;
   padding: 5px 0;
+  height: 37px;
 }
 
 .top-bar .scroll-view-item{
@@ -15,7 +16,7 @@
 .top-bar .scroll-view-item:first-child{
   border-left: 1px solid #eee;
 }
-.top-bar .scroll-view-item.active{
+.top-bar .active{
   background:rgba(26, 173, 22, 0.65);
   font-weight: bold;
 }
@@ -42,7 +43,7 @@
 }
 .right-bar-scroll{
   width: 120px;
-  height: 522px;
+  height: 506px;
   background: #fff;
   display:inline-block;
   vertical-align: middle;
@@ -64,12 +65,15 @@
 }
 
 .content{
-  height: 523px;
+  height: 507px;
   background: #f6f8f9;
 }
-
+.base-image{
+	height: 91%;
+	display: block;
+}
 .base-image image{
-	width: 100%;
+	width: 99%;
 	height: 100%;
 	display: block;
 }

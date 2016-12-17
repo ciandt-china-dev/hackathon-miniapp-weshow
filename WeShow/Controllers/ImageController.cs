@@ -32,7 +32,7 @@ namespace WeShow.Controllers
                 if (string.IsNullOrEmpty(option) || !GetUploadImage(out file))
                 {
                     // 这里直接返回猪头
-                    return new JsonResult( "Lib/pig.jpg" );
+                    return new JsonResult("Lib/pig.jpg");
                 }
 
                 var optionArray = option.Split(',');
@@ -52,13 +52,13 @@ namespace WeShow.Controllers
                     Image<Bgr, Byte> imageGlass = ChooseGlass(strImageFullPath);
                     if (Rectangles.Count < 2 || Rectangles.Count > 5)
                     {
-                        return new JsonResult("Lib/pig.jpg" );
+                        return new JsonResult("Lib/pig.jpg");
                     }
                     if (Rectangles.Count == 3)
                     {
                         ExecuteWhenRectangleCountEquals3(Rectangles);
                     }
-                    if(Rectangles.Count==4)
+                    if (Rectangles.Count == 4)
                     {
                         ExecuteWhenRectangleCountEquals4(Rectangles);
                     }
@@ -66,6 +66,7 @@ namespace WeShow.Controllers
                     imageResult = GetUpdatedImageWithGlass(frame, Rectangles, imageGlass);
                     #endregion
                 }
+
                 if (optionArray.Contains("hat"))
                 {
                     CascadeClassifier haar = new CascadeClassifier(GetServerPath(@"Lib\haarcascade_frontalface_default.xml"));    //初始化分类器
@@ -85,7 +86,7 @@ namespace WeShow.Controllers
                     //检测并将数据储存
                     if (resultRactangles.Count() != 1)
                     {
-                        return new JsonResult("Lib/pig.jpg" );
+                        return new JsonResult("Lib/pig.jpg");
                     }
                     Bitmap AddHatImageResult = new Bitmap(hatFrame.Width, hatFrame.Height);
                     using (Graphics g = Graphics.FromImage(imageResult))
@@ -97,18 +98,20 @@ namespace WeShow.Controllers
                         g.DrawImage(hatImage, rect);
                     }
                     //Image<Bgr, Byte> res = new Image<Bgr, byte>(imageResult);
-
                 }
-
+                if (imageResult == null)
+                {
+                    return new JsonResult("Lib/pig.jpg");
+                }
 
 
                 return SaveFileThenReturnResult(imageResult);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                return  new JsonResult( e.ToString() );
+                return new JsonResult(e.ToString());
             }
-            
+
 
         }
 
@@ -126,7 +129,7 @@ namespace WeShow.Controllers
         {
             imageResult.Save(strImageFullPath);
 
-            return new JsonResult( Path.Combine(Path.Combine(strImageRootPath, strImageFileName)) );
+            return new JsonResult(Path.Combine(Path.Combine(strImageRootPath, strImageFileName)));
         }
 
         #endregion
@@ -134,21 +137,21 @@ namespace WeShow.Controllers
 
         private static void ExecuteWhenRectangleCountEquals3(List<Rectangle> rectangles)
         {
-          
+
             var maxHeight = rectangles.Max(m => m.Height);
             var minHeight = rectangles.Min(m => m.Height);
             var midHeight = rectangles.First(m => m.Height != maxHeight && m.Height != minHeight).Height;
-            if(maxHeight- midHeight >= midHeight- minHeight)
+            if (maxHeight - midHeight >= midHeight - minHeight)
             {
                 var current = rectangles.First(m => m.Height == maxHeight);
                 rectangles.Remove(current);
             }
             else
             {
-                var current = rectangles.First(m => m.Height==minHeight);
+                var current = rectangles.First(m => m.Height == minHeight);
                 rectangles.Remove(current);
             }
-          
+
 
         }
 
@@ -240,16 +243,16 @@ namespace WeShow.Controllers
                 if (brightness < 0.63)
                 {
                     ///黑皮肤
-                    return new Image<Bgr, byte>(GetServerPath($"Lib\\glass_light{r.Next(1,3).ToString()}.png"));
+                    return new Image<Bgr, byte>(GetServerPath($"Lib\\glass_light{r.Next(1, 3).ToString()}.png"));
                 }
                 else
                 {
-                    return new Image<Bgr, byte>(GetServerPath($"Lib\\glass_dark{r.Next(1,3).ToString()}.png"));
+                    return new Image<Bgr, byte>(GetServerPath($"Lib\\glass_dark{r.Next(1, 3).ToString()}.png"));
                 }
             }
             else
             {
-                return new Image<Bgr, byte>(GetServerPath(@"Lib\glass.png"));
+                return new Image<Bgr, byte>(GetServerPath(@"Lib\glass_light1.png"));
             }
 
 
@@ -304,14 +307,14 @@ namespace WeShow.Controllers
 
                 if (brightness < 0.63)
                 {
-                    
+
                     ///黑皮肤
                     return new Image<Bgr, byte>(GetServerPath(@"Lib\hat_light.png"));
                 }
                 else
                 {
                     Random r = new Random();
-                    return new Image<Bgr, byte>(GetServerPath($"Lib\\hat_dark{r.Next(1,4).ToString()}.png"));
+                    return new Image<Bgr, byte>(GetServerPath($"Lib\\hat_dark{r.Next(1, 4).ToString()}.png"));
                 }
             }
             else
