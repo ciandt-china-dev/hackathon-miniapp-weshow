@@ -20,11 +20,19 @@ namespace WeShow.Controllers
     {
         private string imageRoot = "imageTemp";
         private string serverImageRoot;
-        // GET: Image
+
+        #region Api
         [HttpPost]
-        [Route("image/automatic")]
-        public HttpResponseMessage Index()
+        [Route("image/automatic/{option}")]
+        public HttpResponseMessage Index(string option)
         {
+            if(string.IsNullOrEmpty(option))
+            {
+                return new JsonResult(new SampleResult() { Status = 2, Data = "上传文件出错" });
+            }
+
+            var optionArray = option.Split(',');
+            Bitmap imageResult = null;
             //文件保存目录路径 
             HttpPostedFile file = null;
             if (!GetUploadImage(out file))
@@ -32,28 +40,77 @@ namespace WeShow.Controllers
                 return new JsonResult(new SampleResult() { Status = 2, Data = "上传文件出错" });
             }
             serverImageRoot = GetServerPath(Path.Combine(imageRoot, file.FileName));
-            CascadeClassifier haar = new CascadeClassifier(GetServerPath("Lib/haarcascade_eye.xml"));    //初始化分类器
+            if (optionArray.Contains("glass"))
+            {
+                #region 加眼镜
+                CascadeClassifier haar = new CascadeClassifier(GetServerPath("Lib/haarcascade_eye.xml"));    //初始化分类器
 
-            Image<Bgr, byte> frame = new Image<Bgr, byte>(serverImageRoot);  //加载上传的图片
+                Image<Bgr, byte> frame = new Image<Bgr, byte>(serverImageRoot);  //加载上传的图片
 
-            List<Rectangle> Rectangles = GetEyesByImage(haar, frame);
+                List<Rectangle> Rectangles = GetRectanglesByImage(haar, frame);
+
+
+                Image<Bgr, Byte> imageGlass = ChooseGlass(serverImageRoot);
+                if (Rectangles.Count < 2 || Rectangles.Count > 5)
+                {
+                    return new JsonResult(new SampleResult() { Status = 2, Data = "image/Lib/pig.jpg" });
+                }
+                if (Rectangles.Count != 2)
+                {
+                    ExecuteWhenRectangleCountEquals3(Rectangles);
+                }
+                SortRectangle(Rectangles);
+                 imageResult = GetUpdatedImageWithGlass(frame, Rectangles, imageGlass);
+                #endregion
+            }
+            if(optionArray.Contains("hat"))
+            {
+                CascadeClassifier haar = new CascadeClassifier(GetServerPath(@"lib\haarcascade_frontalface_default.xml"));    //初始化分类器
+                Image<Bgr, Byte> imageHat = new Image<Bgr, byte>(GetServerPath(@"Lib\hat.png"));
+                Image<Bgr, byte> hatFrame;
+                if (imageResult==null)
+                {
+                    hatFrame = new Image<Bgr, byte>(serverImageRoot);
+                }
+                else
+                {
+                    hatFrame = new Image<Bgr, byte>(imageResult);
+                }
+               
+                Rectangle[] resultRactangles = haar.DetectMultiScale(hatFrame, 1.1, 10, new System.Drawing.Size(10, 10));
+                //检测并将数据储存
+                if(resultRactangles.Count()!=1)
+                {
+                    return new JsonResult(new SampleResult() { Status = 2, Data = "image/Lib/pig.jpg" });
+                }
+                Bitmap AddHatImageResult = new Bitmap(hatFrame.Width, hatFrame.Height);
+                using (Graphics g = Graphics.FromImage(imageResult))
+                {
+                    RectangleF rect = new RectangleF(resultRactangles[0].X - (int)(resultRactangles[0].Width / 4.5), resultRactangles[0].Y - (int)(resultRactangles[0].Height / 1.5), (int)(resultRactangles[0].Width * 1.25), resultRactangles[0].Height);
+                    g.DrawImage(hatFrame.Bitmap, 0, 0);
+                    var glass = imageHat.Bitmap;
+                    glass.MakeTransparent();
+                    g.DrawImage(glass, rect);
+                }
+                //Image<Bgr, Byte> res = new Image<Bgr, byte>(imageResult);
+               
+            }
+           
           
+          
+            return SaveFileThenReturnResult(file, imageResult);
 
-            Image<Bgr, Byte> imageGlass = ChooseGlass(serverImageRoot);
-            if (Rectangles.Count < 2|| Rectangles.Count>5)
-            {
-                return new JsonResult(new SampleResult() { Status = 2, Data = "我现在还不够聪明，需要钱来改善我的基因" });
-            }
-            if(Rectangles.Count !=2)
-            {
-                ExecuteWhenRectangleCountEquals3(Rectangles);
-            }
-            SortRectangle(Rectangles);
-            Bitmap imageResult = GetUpdatedImage(frame, Rectangles, imageGlass);
+        }
+
+        private HttpResponseMessage SaveFileThenReturnResult(HttpPostedFile file, Bitmap imageResult)
+        {
             imageResult.Save(serverImageRoot);
 
             return new JsonResult(new SampleResult() { Status = 1, Data = Path.Combine("image", Path.Combine(imageRoot, file.FileName)) });
         }
+
+        #endregion
+        #region AddGlassInternal
 
         private static void ExecuteWhenRectangleCountEquals3(List<Rectangle> Rectangles)
         {
@@ -80,21 +137,21 @@ namespace WeShow.Controllers
             //{
             //    Rectangles.RemoveAt(0);
             //}
-            while(Rectangles.Count>2)
+            while (Rectangles.Count > 2)
             {
-                var maxHeight= Rectangles.Max(m => m.Height);
+                var maxHeight = Rectangles.Max(m => m.Height);
                 var current = Rectangles.First(m => m.Height == maxHeight);
                 Rectangles.Remove(current);
             }
-           
+
         }
 
-        private static Bitmap GetUpdatedImage(Image<Bgr, byte> frame, List<Rectangle> Rectangles, Image<Bgr, byte> imageGlass)
+        private static Bitmap GetUpdatedImageWithGlass(Image<Bgr, byte> frame, List<Rectangle> Rectangles, Image<Bgr, byte> imageGlass)
         {
             Bitmap imageResult = new Bitmap(frame.Width, frame.Height);
             using (Graphics g = Graphics.FromImage(imageResult))
             {
-                RectangleF rect = new RectangleF(Rectangles[0].X- Rectangles[0].Width/2, Rectangles[0].Y, Rectangles[1].X - Rectangles[0].X + Rectangles[1].Width+ Rectangles[0].Width / 2+ Rectangles[1].Width / 2, Rectangles[0].Height);
+                RectangleF rect = new RectangleF(Rectangles[0].X - Rectangles[0].Width / 2, Rectangles[0].Y, Rectangles[1].X - Rectangles[0].X + Rectangles[1].Width + Rectangles[0].Width / 2 + Rectangles[1].Width / 2, Rectangles[0].Height);
                 g.DrawImage(frame.Bitmap, 0, 0);
                 var glass = imageGlass.Bitmap;
                 glass.MakeTransparent();
@@ -113,31 +170,17 @@ namespace WeShow.Controllers
             }
         }
 
-        private static List<Rectangle> GetEyesByImage(CascadeClassifier haar, Image<Bgr, byte> frame)
-        {
-            Rectangle[] results = haar.DetectMultiScale(frame, 1.3, 3, new System.Drawing.Size(10, 10));
-            //检测并将数据储存
-            List<Rectangle> Rectangles = new List<Rectangle>(2);
-            foreach (Rectangle Rectangle in results)
-            {
 
-                //CvInvoke.Rectangle(frame, result, new Bgr(Color.Red).MCvScalar, 2);  //在检测到的区域绘制红框
-
-                Rectangles.Add(Rectangle);
-            }
-
-            return Rectangles;
-        }
 
         private bool GetUploadImage(out HttpPostedFile file)
         {
             var files = HttpContext.Current.Request.Files;
-            if(files.Count!=1)
+            if (files.Count != 1)
             {
                 file = null;
                 return false;
             }
-            var f= files[0];
+            var f = files[0];
             // 文件安全验证...
             file = f;
             file.SaveAs(HttpContext.Current.Server.MapPath(Path.Combine(imageRoot, f.FileName)));
@@ -182,10 +225,10 @@ namespace WeShow.Controllers
             Image<Bgr, byte> frame = new Image<Bgr, byte>(imagePath);
             Rectangle[] results = haar.DetectMultiScale(frame, 1.3, 3, new System.Drawing.Size(10, 10));
             //检测并将数据储存
-            if(results.Count()>1)
+            if (results.Count() > 1)
             {
                 Rectangle result = results[0];
-                     var image = frame.Bitmap;
+                var image = frame.Bitmap;
                 CovertRectangleToBitmap(result, image);
                 var brightness = GetImageBrightness(image);
 
@@ -203,9 +246,44 @@ namespace WeShow.Controllers
             {
                 return new Image<Bgr, byte>(GetServerPath(@"Lib\glass.png"));
             }
-          
-        
-            
+
+
+
         }
+        #endregion
+        #region common
+        private static List<Rectangle> GetRectanglesByImage(CascadeClassifier haar, Image<Bgr, byte> frame)
+        {
+            Rectangle[] results = haar.DetectMultiScale(frame, 1.3, 3, new System.Drawing.Size(10, 10));
+            //检测并将数据储存
+            List<Rectangle> Rectangles = new List<Rectangle>(2);
+            foreach (Rectangle Rectangle in results)
+            {
+
+                //CvInvoke.Rectangle(frame, result, new Bgr(Color.Red).MCvScalar, 2);  //在检测到的区域绘制红框
+
+                Rectangles.Add(Rectangle);
+            }
+
+            return Rectangles;
+        }
+
+        #endregion
+        private static Bitmap GetUpdatedImageWithBread(Image<Bgr, byte> frame, Rectangle Rectangle, Image<Bgr, byte> imageBread)
+        {
+            Bitmap imageResult = new Bitmap(frame.Width, frame.Height);
+            using (Graphics g = Graphics.FromImage(imageResult))
+            {
+                RectangleF rect = new RectangleF(Rectangle.X, Rectangle.Y, Rectangle.Width, - Rectangle.Height);
+                g.DrawImage(frame.Bitmap, 0, 0);
+                var glass = imageBread.Bitmap;
+                glass.MakeTransparent();
+                g.DrawImage(glass, rect);
+
+            }
+
+            return imageResult;
+        }
+
     }
 }
