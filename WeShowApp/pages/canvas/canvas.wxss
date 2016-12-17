@@ -1,0 +1,16 @@
+/* pages/canvas/canvas.wxss */
+.canvas_bg{
+    background:red;
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+}
+.cavans_content{
+    height:90%;
+    width:100%;
+}
+.bg_blue{
+    background:white;
+}
