@@ -3,13 +3,13 @@
     <view class="top-bar">
       <scroll-view scroll-y="true" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll" scroll-top="{{scrollTop}}">
         <block wx:for-items="{{categorys}}">
-            <view id="{{item.id}}" class="scroll-view-item {{item.active}}" bindtap="selectCategory">
+            <view id="{{item.id}}" class="scroll-view-item" bindtap="selectCategory">
                 <text class="category-name">{{item.name}}</text>
             </view>
         </block>
       </scroll-view>
     </view>
-    <!--<view class="section right-bar {{showRightBar}}">
+    <view class="section right-bar {{showRightBar}}">
       <text class="toggle-right-bar" bindtap="toggleRightBar">《</text>
       <scroll-view class="right-bar-scroll" scroll-y="true" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll"  scroll-top="{{scrollTop}}">
         <block wx:for-items="{{glasses}}">
@@ -18,17 +18,13 @@
             </view>
         </block>
        </scroll-view>
-    </view>-->
+    </view>
     <view class="section content">
       <button class="choose-image" bindtap="chooseImage">Chosse Image</button>
       <view class="base-image">
-          <image src="{{tempFilePath}}" mode="aspectFill" />
+          <image src="{{backgroundImage}}" mode="aspectFill" />
       </view>
     </view>
-    <modal class="modal" hidden="{{modalHidden}}" no-cancel bindconfirm="modalChange" bindcancel="modalChange">
-      <view> 请在上方菜单中选择你要搭配的服饰，以及选择你的靓照 </view>
-      <view> 选择完毕后点击提交 </view>
-    </modal>
   </view>
 </view>
 <!--<view class="container">

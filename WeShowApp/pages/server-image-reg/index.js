@@ -1,7 +1,8 @@
 Page({
   data: {
     toView: 'red',
-    modalHidden: false,
+    modalHidden: true,
+    backgroundImage:'',
     categorys: [{
       id: '1',
       key:'glass',
@@ -45,7 +46,10 @@ Page({
       id: '0206',
       src: '../../images/glasses/glasses0206.png'
     }],
-    showRightBar: ''
+    //showRightBar: ''
+  },
+  onLoad: function(options){
+    this.changeBackGroundImage()
   },
   upper: function(e) {
     console.log(e)
@@ -97,6 +101,27 @@ Page({
   //     showRightBar: showRightBar
   //   });
   // },
+  changeBackGroundImage:function(){
+      var that = this;
+      wx.showModal({
+          title: '微秀',
+          content: that.backgroundImage?'换一张图片？':'请选择一张照片，一起微秀',
+          success: function(res) {
+              if(res.confirm)
+                wx.chooseImage({
+                  count: 1, // 最多可以选择的图片张数，默认9
+                  sizeType: ['compressed'],
+                  sourceType: ['album', 'camera'],
+                  complete: function(e) {
+                    if(!e.tempFilePaths){
+                        return;
+                    }
+                    that.backgroundImage = e.tempFilePaths[0];
+                }
+             })
+           }
+        });
+  },
   chooseImage: function(e){
     var that = this
     wx.chooseImage({
