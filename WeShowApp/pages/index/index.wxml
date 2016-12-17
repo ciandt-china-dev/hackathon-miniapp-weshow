@@ -10,11 +10,11 @@
       </scroll-view>
     </view>
     <view class="section right-bar {{showRightBar}}">
-      <text class="toggle-right-bar" bindtap="toggleRightBar">《</text>
+      <text class="toggle-right-bar" catchtap="toggleRightBar">《</text>
       <scroll-view class="right-bar-scroll" scroll-y="true" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll"  scroll-top="{{scrollTop}}">
 
         <block wx:for-items="{{sidebar}}">
-            <view id="{{item.id}}" data-imgsrc="{{item.src}}" data-imgHeight="{{item.height}}" class="scroll-view-item" bindtap="selectGoods">
+            <view id="{{item.id}}" data-imgsrc="{{item.src}}" data-imgHeight="{{item.height}}" class="scroll-view-item" catchtap="selectGoods">
                 <image class="widgets__info-img" src="{{item.src}}" mode="aspectFill"/>
             </view>
         </block>
@@ -22,6 +22,8 @@
     </view>
     <view class="section content">
         <canvas 
+        data-width="{{glass.canvasWidth}}"
+        style="width:{{glass.canvasWidth}}rpx"
             disable-scroll="{{true}}"
             canvas-id="{{glass.canvasId}}" 
             class="cavans_content bg_blue"
@@ -31,6 +33,6 @@
             bindtouchcancel="touchcancel"
             binderror="toucherror"
             />
-        </view>
+    </view>
   </view>
 </view>

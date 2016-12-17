@@ -4,7 +4,7 @@ module.exports = {
     glass:function(){
         return {
             canvasId:1,
-            canvasWidth:app.globalData.window.width,
+            canvasWidth:750,
             canvasHeight:app.globalData.window.height,
             backgroundImage:"",
             lastUpdate:0,
@@ -30,6 +30,10 @@ module.exports = {
                 this.page = page;
                 
                 this.changeBackGroundImage();
+                this.update();
+            },
+            toggleCanvasWidth:function(full){
+                this.canvasWidth = full?750:510;
                 this.update();
             },
             changeBackGroundImage:function(){
@@ -66,7 +70,7 @@ module.exports = {
                     centerX:centerX,
                     centerY:centerY,
                     width:width,
-                    height:height,
+                    height:height+10,
                     curX:centerX-width/2,
                     curY:centerY-height/2,
                 });

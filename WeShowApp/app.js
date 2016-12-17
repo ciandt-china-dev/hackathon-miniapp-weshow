@@ -1,21 +1,17 @@
 //app.js
 App({
   onLaunch: function () {
-    //调用API从本地缓存中获取数据
-    // var logs = wx.getStorageSync('logs') || [];
-    // var that = this;
-    // logs.unshift(Date.now())
-    // wx.setStorageSync('logs', logs)
-
-    // wx.getSystemInfo({
-    //   success:function(res){
-    //     console.log(res);
-    //     that.globalData.window = {
-    //       width:res.windowWidth,
-    //       height:res.windowHeight,
-    //     }
-    //   }
-    // });
+    var that = this;
+    wx.getSystemInfo({
+      success:function(res){
+        console.log(res);
+        that.globalData.window = {
+          pixelRatio:res.pixelRatio,
+          width:res.windowWidth,
+          height:res.windowHeight,
+        }
+      }
+    });
   },
   getUserInfo:function(cb){
     var that = this
@@ -40,6 +36,7 @@ App({
     window:{
       width:375,
       height:627,
+      pixelRatio:2,
     }
   }
 })

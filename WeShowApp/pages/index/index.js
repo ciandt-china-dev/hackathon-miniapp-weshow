@@ -1,5 +1,6 @@
 var glass = require("../../models/glass").glass();
 var data = require("../../models/datas");
+var app = getApp();
 console.log(data);
 
 Page({
@@ -48,8 +49,8 @@ Page({
       this.setData({
         showRightBar: showRightBar
       });
+      glass.toggleCanvasWidth(!showRightBar);
     },
-      
   touchstart:function(e){
     glass.touchTimeStamp = e.timeStamp;
     glass.touchesLength = e.touches.length;
@@ -75,10 +76,19 @@ Page({
     glass.update();
   },
   touchend:function(e){
-    console.log("touchend");
-    glass.touchesLength = e.touches.length;
+    console.log("touchend",e);
+    var point = e.changedTouches[0];
     if(e.timeStamp-glass.touchTimeStamp<500){
-      if(!glass.curStuff) glass.changeBackGroundImage();
+      if(!glass.curStuff){
+        var dis = glass.canvasWidth-750*point.x/app.globalData.window.width;
+        console.log(dis);
+        if(dis<80&&
+        dis>=0){
+          this.toggleRightBar();
+        }else{
+          glass.changeBackGroundImage();
+        }
+      } 
     }
     glass.touchEnd();
     
