@@ -69,7 +69,7 @@ namespace WeShow.Controllers
                 if (optionArray.Contains("hat"))
                 {
                     CascadeClassifier haar = new CascadeClassifier(GetServerPath(@"Lib\haarcascade_frontalface_default.xml"));    //初始化分类器
-                    Image<Bgr, Byte> imageHat = new Image<Bgr, byte>(GetServerPath(@"Lib\hat.png"));
+                    Image<Bgr, Byte> imageHat = ChooseHat(strImageFullPath);
                     Image<Bgr, byte> hatFrame;
                     if (imageResult == null)
                     {
@@ -287,6 +287,37 @@ namespace WeShow.Controllers
             }
 
             return imageResult;
+        }
+        private Image<Bgr, Byte> ChooseHat(string imagePath)
+        {
+            CascadeClassifier haar = new CascadeClassifier(GetServerPath(@"Lib\haarcascade_frontalface_default.xml"));    //初始化分类器
+            Image<Bgr, byte> frame = new Image<Bgr, byte>(imagePath);
+            Rectangle[] results = haar.DetectMultiScale(frame, 1.3, 3, new System.Drawing.Size(10, 10));
+            //检测并将数据储存
+            if (results.Count() > 1)
+            {
+                Rectangle result = results[0];
+                var image = frame.Bitmap;
+                CovertRectangleToBitmap(result, image);
+                var brightness = GetImageBrightness(image);
+
+                if (brightness < 0.63)
+                {
+                    ///黑皮肤
+                    return new Image<Bgr, byte>(GetServerPath(@"Lib\hat.png"));
+                }
+                else
+                {
+                    return new Image<Bgr, byte>(GetServerPath(@"Lib\hat.png"));
+                }
+            }
+            else
+            {
+                return new Image<Bgr, byte>(GetServerPath(@"Lib\hat.png"));
+            }
+
+
+
         }
 
     }
