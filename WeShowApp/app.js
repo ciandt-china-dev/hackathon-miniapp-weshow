@@ -2,9 +2,20 @@
 App({
   onLaunch: function () {
     //调用API从本地缓存中获取数据
-    var logs = wx.getStorageSync('logs') || []
+    var logs = wx.getStorageSync('logs') || [];
+    var that = this;
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
+
+    wx.getSystemInfo({
+      success:function(res){
+        console.log(res);
+        that.globalData.window = {
+          width:res.windowWidth,
+          height:res.windowHeight,
+        }
+      }
+    });
   },
   getUserInfo:function(cb){
     var that = this
@@ -25,6 +36,10 @@ App({
     }
   },
   globalData:{
-    userInfo:null
+    userInfo:null,
+    window:{
+      width:375,
+      height:627,
+    }
   }
 })

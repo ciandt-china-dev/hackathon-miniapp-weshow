@@ -1,16 +1,14 @@
 /* pages/canvas/canvas.wxss */
 .canvas_bg{
-    background:red;
-    position: absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
+    height:1200rpx;
+    margin:0;
+    padding:0;
+
 }
 .cavans_content{
-    height:90%;
-    width:100%;
+    height:1000rpx;
+    width:750rpx;
 }
 .bg_blue{
-    background:white;
+    background:blue;
 }

@@ -1,3 +1,16 @@
-<view class="canvas_bg">
-<canvas canvas-id="1" class="cavans_content bg_blue"/>
+<view 
+    class="canvas_bg">
+<canvas 
+    disable-scroll="true"
+    canvas-id="{{glass.canvasId}}" 
+    class="cavans_content bg_blue"
+    bindtouchstart="touchstart"
+    bindtouchmove="touchmove"
+    bindtouchend="touchend"
+    bindtouchcancel="touchcancel"
+    binderror="toucherror"
+    />
+<text>
+x:{{glass.curX}}-y:{{glass.curY}}-id:{{glass.touchesLength}}
+</text>
 </view>
