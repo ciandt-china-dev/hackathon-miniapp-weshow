@@ -38,9 +38,11 @@ namespace Sample
             Bitmap imageResult = new Bitmap(frame.Width,frame.Height);
             using (Graphics g = Graphics.FromImage(imageResult))
             {
-                RectangleF rect = new RectangleF(Rectangles[0].X, Rectangles[0].Y, Rectangles[1].X - Rectangles[0].X, Rectangles[1].Y - Rectangles[0].Y);
+                RectangleF rect = new RectangleF(Rectangles[0].X, Rectangles[0].Y, Rectangles[1].X - Rectangles[0].X+ Rectangles[1].Width, Rectangles[0].Height);
                 g.DrawImage(frame.Bitmap, 0, 0);
-                g.DrawImage(imageGlass.Bitmap, rect);
+                var glass = imageGlass.Bitmap;
+                glass.MakeTransparent();
+                g.DrawImage(glass, rect);
 
             }
             Image<Bgr, Byte> res = new Image<Bgr, byte>(imageResult);
