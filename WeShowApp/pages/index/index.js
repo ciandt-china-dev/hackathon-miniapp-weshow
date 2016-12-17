@@ -43,6 +43,7 @@ Page({
         selectedCategory: category,
         showRightBar:'show',
     });
+    glass.toggleCanvasWidth(false);
   },
   toggleRightBar: function(e) {
       var showRightBar = (this.data.showRightBar ? '' : 'show');

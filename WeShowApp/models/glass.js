@@ -120,12 +120,13 @@ module.exports = {
                 var context = wx.createContext()
                 
                 context.translate(0,0);
+                var imgWidth = this.canvasWidth/750*app.globalData.window.width;
                 context.drawImage(
                     this.backgroundImage,
                     0,
                     0,
-                    this.canvasWidth,
-                    this.canvasWidth*this.bgHeight/this.bgWidth,
+                    imgWidth,
+                    imgWidth*this.bgHeight/this.bgWidth,
                 );
 
                 for(var i=0;i<this.stuffs.length;i++){
