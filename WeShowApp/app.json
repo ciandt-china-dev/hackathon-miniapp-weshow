@@ -1,5 +1,6 @@
 {
   "pages":[
+    "pages/canvas/canvas",
     "pages/index/index",
     "pages/server-image-reg/index"
   ],
@@ -9,6 +10,9 @@
     "navigationBarTitleText": "微秀WeShow",  
     "navigationBarTextStyle":"white" 
   },
+<<<<<<< HEAD
+  "debug":true
+=======
   "tabBar": {
     "color": "#dddddd",
     "selectedColor": "#3cc51f",
@@ -33,4 +37,5 @@
     "downloadFile": 10000
   },
   "debug": true
+>>>>>>> origin/master
 }

@@ -1,0 +1,3 @@
+<view class="canvas_bg">
+<canvas canvas-id="1" class="cavans_content bg_blue"/>
+</view>
