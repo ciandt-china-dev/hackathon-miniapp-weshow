@@ -75,14 +75,14 @@ Page({
       sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
       success: function success(res) {
         wx.uploadFile({
-          url: 'https://weshow.nbhanyi.com/image/automatic/glass', //仅为示例，非真实的接口地址
+          url: 'https://weshow.nbhanyi.com/glass,hat', //仅为示例，非真实的接口地址
           filePath: res.tempFilePaths[0],
           name: 'file',
           formData:{},
           success: function(res){
-            var data = res.data
+            var filePath = 'https://weshow.nbhanyi.com/' + res.Data
             that.setData({
-              tempFilePath: res.tempFilePaths
+              tempFilePath: filePath
             })
           }
         })
