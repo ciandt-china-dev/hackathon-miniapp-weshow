@@ -16,22 +16,21 @@
   border-left: 1px solid #eee;
 }
 .right-bar{
-  width:150px;
+  width:146px;
   position: fixed;
-  right: -124px;
+  right: -120px;
 }
 .right-bar.show{
-  transform:translate(-124px,0);
+  transform:translate(-120px,0);
 }
 .right-bar .toggle-right-bar{
   display: inline-block;
   width: 26px;
   vertical-align: middle;
   text-align: center;
-  background: rgba(255, 255, 255, 0.55);
-  color: #1AAD16;
+  background: rgba(26, 173, 22, 0.65);
+  color: #fff;
   padding: 30px 0;
-  /*margin-right: 4px;*/
 }
 
 .right-bar.show .toggle-right-bar{
@@ -39,7 +38,8 @@
 }
 .right-bar-scroll{
   width: 120px;
-  background: #f6f8f9;
+  height: 522px;
+  background: #fff;
   display:inline-block;
   vertical-align: middle;
 }
@@ -61,23 +61,9 @@
 
 .content{
   height: 523px;
-  background: #ddd;
+  background: #f6f8f9;
 }
 
 .scroll-view-item_H{
   display: inline-block;
 }
-
-/*.bc_green{
-	background:green;
-}
-.bc_red{
-  background: red;
-}
-
-.bc_yellow{
-	background:yellow;
-}
-.bc_blue{
-  background: blue;
-}*/
