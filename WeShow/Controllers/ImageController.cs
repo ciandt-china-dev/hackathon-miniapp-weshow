@@ -26,77 +26,85 @@ namespace WeShow.Controllers
         [Route("{option}")]
         public HttpResponseMessage Index(string option)
         {
-            HttpPostedFile file = null;
-            if (string.IsNullOrEmpty(option) || !GetUploadImage(out file))
+            try
             {
-                // 这里直接返回猪头
-                return new JsonResult(new SampleResult() { Status = 2, Data = "上传文件出错" });
-            }
+                HttpPostedFile file = null;
+                if (string.IsNullOrEmpty(option) || !GetUploadImage(out file))
+                {
+                    // 这里直接返回猪头
+                    return new JsonResult(new SampleResult() { Status = 1, Data = "Lib/pig.jpg" });
+                }
 
-            var optionArray = option.Split(',');
-            Bitmap imageResult = null;
-            strImageFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + file.FileName;
-            strImageFullPath = GetServerPath(Path.Combine(strImageRootPath, strImageFileName));
-            file.SaveAs(strImageFullPath);
-            if (optionArray.Contains("glass"))
+                var optionArray = option.Split(',');
+                Bitmap imageResult = null;
+                strImageFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + file.FileName;
+                strImageFullPath = GetServerPath(Path.Combine(strImageRootPath, strImageFileName));
+                file.SaveAs(strImageFullPath);
+                if (optionArray.Contains("glass"))
+                {
+                    #region 加眼镜
+                    CascadeClassifier haar = new CascadeClassifier(GetServerPath("Lib/haarcascade_eye.xml"));    //初始化分类器
+                    Image<Bgr, byte> frame = new Image<Bgr, byte>(strImageFullPath);  //加载上传的图片
+
+                    List<Rectangle> Rectangles = GetRectanglesByImage(haar, frame);
+
+
+                    Image<Bgr, Byte> imageGlass = ChooseGlass(strImageFullPath);
+                    if (Rectangles.Count < 2 || Rectangles.Count > 5)
+                    {
+                        return new JsonResult(new SampleResult() { Status = 2, Data = "Lib/pig.jpg" });
+                    }
+                    if (Rectangles.Count != 2)
+                    {
+                        ExecuteWhenRectangleCountEquals3(Rectangles);
+                    }
+                    SortRectangle(Rectangles);
+                    imageResult = GetUpdatedImageWithGlass(frame, Rectangles, imageGlass);
+                    #endregion
+                }
+                if (optionArray.Contains("hat"))
+                {
+                    CascadeClassifier haar = new CascadeClassifier(GetServerPath(@"Lib\haarcascade_frontalface_default.xml"));    //初始化分类器
+                    Image<Bgr, Byte> imageHat = new Image<Bgr, byte>(GetServerPath(@"Lib\hat.png"));
+                    Image<Bgr, byte> hatFrame;
+                    if (imageResult == null)
+                    {
+                        hatFrame = new Image<Bgr, byte>(strImageFullPath);
+                        imageResult = hatFrame.Bitmap;
+                    }
+                    else
+                    {
+                        hatFrame = new Image<Bgr, byte>(imageResult);
+                    }
+
+                    Rectangle[] resultRactangles = haar.DetectMultiScale(hatFrame, 1.1, 10, new System.Drawing.Size(10, 10));
+                    //检测并将数据储存
+                    if (resultRactangles.Count() != 1)
+                    {
+                        return new JsonResult(new SampleResult() { Status = 2, Data = "Lib/pig.jpg" });
+                    }
+                    Bitmap AddHatImageResult = new Bitmap(hatFrame.Width, hatFrame.Height);
+                    using (Graphics g = Graphics.FromImage(imageResult))
+                    {
+                        RectangleF rect = new RectangleF(resultRactangles[0].X - (int)(resultRactangles[0].Width / 4.5), resultRactangles[0].Y - (int)(resultRactangles[0].Height / 1.5), (int)(resultRactangles[0].Width * 1.25), resultRactangles[0].Height);
+                        g.DrawImage(hatFrame.Bitmap, 0, 0);
+                        var hatImage = imageHat.Bitmap;
+                        hatImage.MakeTransparent();
+                        g.DrawImage(hatImage, rect);
+                    }
+                    //Image<Bgr, Byte> res = new Image<Bgr, byte>(imageResult);
+
+                }
+
+
+
+                return SaveFileThenReturnResult(imageResult);
+            }
+            catch(Exception e)
             {
-                #region 加眼镜
-                CascadeClassifier haar = new CascadeClassifier(GetServerPath("Lib/haarcascade_eye.xml"));    //初始化分类器
-                Image<Bgr, byte> frame = new Image<Bgr, byte>(strImageFullPath);  //加载上传的图片
-
-                List<Rectangle> Rectangles = GetRectanglesByImage(haar, frame);
-
-
-                Image<Bgr, Byte> imageGlass = ChooseGlass(strImageFullPath);
-                if (Rectangles.Count < 2 || Rectangles.Count > 5)
-                {
-                    return new JsonResult(new SampleResult() { Status = 2, Data = "Lib/pig.jpg" });
-                }
-                if (Rectangles.Count != 2)
-                {
-                    ExecuteWhenRectangleCountEquals3(Rectangles);
-                }
-                SortRectangle(Rectangles);
-                imageResult = GetUpdatedImageWithGlass(frame, Rectangles, imageGlass);
-                #endregion
+                return  new JsonResult(new SampleResult() { Status = 2, Data = e.ToString() });
             }
-            if (optionArray.Contains("hat"))
-            {
-                CascadeClassifier haar = new CascadeClassifier(GetServerPath(@"Lib\haarcascade_frontalface_default.xml"));    //初始化分类器
-                Image<Bgr, Byte> imageHat = new Image<Bgr, byte>(GetServerPath(@"Lib\hat.png"));
-                Image<Bgr, byte> hatFrame;
-                if (imageResult == null)
-                {
-                    hatFrame = new Image<Bgr, byte>(strImageFullPath);
-                    imageResult = hatFrame.Bitmap;
-                }
-                else
-                {
-                    hatFrame = new Image<Bgr, byte>(imageResult);
-                }
-
-                Rectangle[] resultRactangles = haar.DetectMultiScale(hatFrame, 1.1, 10, new System.Drawing.Size(10, 10));
-                //检测并将数据储存
-                if (resultRactangles.Count() != 1)
-                {
-                    return new JsonResult(new SampleResult() { Status = 2, Data = "Lib/pig.jpg" });
-                }
-                Bitmap AddHatImageResult = new Bitmap(hatFrame.Width, hatFrame.Height);
-                using (Graphics g = Graphics.FromImage(imageResult))
-                {
-                    RectangleF rect = new RectangleF(resultRactangles[0].X - (int)(resultRactangles[0].Width / 4.5), resultRactangles[0].Y - (int)(resultRactangles[0].Height / 1.5), (int)(resultRactangles[0].Width * 1.25), resultRactangles[0].Height);
-                    g.DrawImage(hatFrame.Bitmap, 0, 0);
-                    var hatImage = imageHat.Bitmap;
-                    hatImage.MakeTransparent();
-                    g.DrawImage(hatImage, rect);
-                }
-                //Image<Bgr, Byte> res = new Image<Bgr, byte>(imageResult);
-
-            }
-
-
-
-            return SaveFileThenReturnResult(imageResult);
+            
 
         }
 
