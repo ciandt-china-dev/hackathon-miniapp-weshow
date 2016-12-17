@@ -50,7 +50,8 @@ Page({
       id: 'black',
       name: '黑色',
       src: '../../images/glasses/glass04.png'
-    }]
+    }],
+    showRightBar: '' 
   },
   upper: function(e) {
     console.log(e)
@@ -71,6 +72,12 @@ Page({
   },
   selectCategory: function(e){
     console.log(e);
+  },
+  toggleRightBar: function(e){
+    var showRightBar = this.data.showRightBar ? '':'show';
+    this.setData({
+      showRightBar: showRightBar
+    });
   }
   // tap: function(e) {
   //   for (var i = 0; i < order.length; ++i) {
