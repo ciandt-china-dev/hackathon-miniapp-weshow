@@ -1,19 +1,19 @@
 {
   "pages":[
-    "pages/canvas/canvas",
+    "pages/server-image-reg/index",
     "pages/index/index",
-    "pages/server-image-reg/index"
+    "pages/canvas/canvas"
   ],
   "window":{
     "backgroundTextStyle":"light",  
-    "navigationBarBackgroundColor": "#999999",  
+    "navigationBarBackgroundColor": "#000",  
     "navigationBarTitleText": "微秀WeShow",  
     "navigationBarTextStyle":"white" 
   },
   "tabBar": {
-    "color": "#dddddd",
-    "selectedColor": "#3cc51f",
-    "borderStyle": "black",
+    "color": "#555",
+    "selectedColor": "#1AAD16",
+    "borderStyle": "#ddd",
     "backgroundColor": "#ffffff",
     "list": [{
       "pagePath": "pages/index/index",
