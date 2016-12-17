@@ -54,9 +54,13 @@ namespace WeShow.Controllers
                     {
                         return new JsonResult(new SampleResult() { Status = 2, Data = "Lib/pig.jpg" });
                     }
-                    if (Rectangles.Count != 2)
+                    if (Rectangles.Count == 3)
                     {
                         ExecuteWhenRectangleCountEquals3(Rectangles);
+                    }
+                    if(Rectangles.Count==4)
+                    {
+                        ExecuteWhenRectangleCountEquals4(Rectangles);
                     }
                     SortRectangle(Rectangles);
                     imageResult = GetUpdatedImageWithGlass(frame, Rectangles, imageGlass);
@@ -108,6 +112,16 @@ namespace WeShow.Controllers
 
         }
 
+        private void ExecuteWhenRectangleCountEquals4(List<Rectangle> rectangles)
+        {
+            while (rectangles.Count > 2)
+            {
+                var minHeight = rectangles.Min(m => m.Height);
+                var current = rectangles.First(m => m.Height == minHeight);
+                rectangles.Remove(current);
+            }
+        }
+
         private HttpResponseMessage SaveFileThenReturnResult(Bitmap imageResult)
         {
             imageResult.Save(strImageFullPath);
@@ -118,37 +132,23 @@ namespace WeShow.Controllers
         #endregion
         #region AddGlassInternal
 
-        private static void ExecuteWhenRectangleCountEquals3(List<Rectangle> Rectangles)
+        private static void ExecuteWhenRectangleCountEquals3(List<Rectangle> rectangles)
         {
-            //var eyewidth0 = Rectangles[0].Width;
-            //var eyewidth1 = Rectangles[1].Width;
-            //var eyewidth2 = Rectangles[2].Width;
-            //List<int> betweenArry = new List<int>();
-            //var between0and1 = Math.Abs(Rectangles[0].Width - Rectangles[1].Width);
-            //betweenArry.Add(between0and1);
-            //var between0and2 = Math.Abs(Rectangles[0].Width - Rectangles[2].Width);
-            //betweenArry.Add(between0and2);
-            //var between1and2 = Math.Abs(Rectangles[1].Width - Rectangles[2].Width);
-            //betweenArry.Add(between1and2);
-            //var minBetween = betweenArry.Min();
-            //if (between0and1 == minBetween)
-            //{
-            //    Rectangles.RemoveAt(2);
-            //}
-            //else if (between0and2 == minBetween)
-            //{
-            //    Rectangles.RemoveAt(1);
-            //}
-            //else
-            //{
-            //    Rectangles.RemoveAt(0);
-            //}
-            while (Rectangles.Count > 2)
+          
+            var maxHeight = rectangles.Max(m => m.Height);
+            var minHeight = rectangles.Min(m => m.Height);
+            var midHeight = rectangles.First(m => m.Height != maxHeight && m.Height != minHeight).Height;
+            if(maxHeight- midHeight >= midHeight- minHeight)
             {
-                var maxHeight = Rectangles.Max(m => m.Height);
-                var current = Rectangles.First(m => m.Height == maxHeight);
-                Rectangles.Remove(current);
+                var current = rectangles.First(m => m.Height == maxHeight);
+                rectangles.Remove(current);
             }
+            else
+            {
+                var current = rectangles.First(m => m.Height==minHeight);
+                rectangles.Remove(current);
+            }
+          
 
         }
 
