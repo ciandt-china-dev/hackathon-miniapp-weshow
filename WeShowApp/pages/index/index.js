@@ -53,8 +53,14 @@ Page({
       glass.toggleCanvasWidth(!showRightBar);
     },
   touchstart:function(e){
+
+      this.setData({
+        showRightBar: ''
+      });
+    glass.toggleCanvasWidth(true);
     glass.touchTimeStamp = e.timeStamp;
     glass.touchesLength = e.touches.length;
+
 
     if(e.touches.length==1){
       var point = e.touches[0];
