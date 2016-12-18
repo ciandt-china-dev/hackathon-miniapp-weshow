@@ -79,17 +79,19 @@ Page({
   touchend:function(e){
     console.log("touchend",e);
     var point = e.changedTouches[0];
-    if(e.timeStamp-glass.touchTimeStamp<500){
-      if(!glass.curStuff){
-        var dis = glass.canvasWidth-750*point.x/app.globalData.window.width;
-        console.log(dis);
-        if(dis<80&&
-        dis>=0){
-          this.toggleRightBar();
-        }else{
-          glass.changeBackGroundImage();
-        }
-      } 
+    var pressTime=e.timeStamp-glass.touchTimeStamp;
+    if(pressTime<500){
+      
+      var dis = glass.canvasWidth-750*point.x/app.globalData.window.width;
+      console.log(dis);
+      if(dis<80&&dis>=0){
+        this.toggleRightBar();
+      }else if(!glass.tryDelCurStuff(point)&&!glass.curStuff){
+        glass.changeBackGroundImage();
+      }
+      
+    }else if(pressTime>2000){
+      glass.saveFile();
     }
     glass.touchEnd();
     

@@ -25,6 +25,7 @@ module.exports = {
             // }
 
             ],
+            stuffIdSeed:0,
             curStuff:false,
             setPage:function(page){
                 this.page = page;
@@ -35,6 +36,48 @@ module.exports = {
             toggleCanvasWidth:function(full){
                 this.canvasWidth = full?750:510;
                 this.update();
+            },
+            saveFile:function(){
+                var that = this;
+                wx.canvasToTempFilePath({
+                  canvasId: that.canvasId,
+                  success: function(res){
+                      console.log(res);
+                      var filePath = res.tempFilePath[0];
+                    wx.previewImage({
+                        current: filePath, // 当前显示图片的http链接
+                        urls: [filePath] // 需要预览的图片http链接列表
+                    })
+                  },
+                  fail: function() {
+                     wx.showToast("保存图片失败");
+                  }
+                })
+                
+            },
+            tryDelCurStuff:function(point){
+                var that = this;
+                var stuff = that.curStuff;
+                console.log(point);
+                console.log(this.curStuff);
+                console.log(this.inCircle(point,{x:this.curStuff.curX,y:this.curStuff.curY}));
+                if(this.curStuff&&this.inCircle(point,{x:this.curStuff.curX,y:this.curStuff.curY})){
+                    wx.showActionSheet({
+                        itemList: ['删除当前装扮'],
+                        success: function(res) {
+                            if (!res.cancel) {
+                                var index = that.stuffs.indexOf(stuff);  
+                                if (index > -1) {  
+                                    that.stuffs.splice(index, 1);  
+                                }
+                                that.curStuff = false;
+                                that.update();
+                            }
+                        }
+                    });
+                    return true;
+                }
+                return false;
             },
             changeBackGroundImage:function(){
                 var that = this;
@@ -65,15 +108,18 @@ module.exports = {
                     });
             },
             addStuff:function(imgsrc,centerX,centerY,width,height){
-                this.stuffs.push({
+                var that = this;
+                that.curStuff = {
+                    stuffId:that.stuffIdSeed++,
                     imgsrc:imgsrc,
-                    centerX:centerX,
-                    centerY:centerY,
+                    centerX:centerX + Math.random()*30-15,
+                    centerY:centerY + Math.random()*30-15,
                     width:width,
                     height:height+10,
                     curX:centerX-width/2,
                     curY:centerY-height/2,
-                });
+                };
+                this.stuffs.push(that.curStuff);
                 this.update();
             },
             inRect:function(point,stuff){
@@ -83,16 +129,21 @@ module.exports = {
                         return true;
                 }
             },
-            inCircle:function(point,stuff){
-                return Math.pow(point.x-stuff.curX-stuff.width,2)+Math.pow(point.y-stuff.curY-stuff.height,2)<=400;
+            inCircle:function(point,point2){
+                console.log(Math.pow(point.x-point2.x,2)+
+                Math.pow(point.y-point2.y,2));
+                return Math.pow(point.x-point2.x,2)+
+                Math.pow(point.y-point2.y,2)<=400;
             },
             isTouched:function(point){
                 for(var i=0;i<this.stuffs.length;i++){
                     var stuff = this.stuffs[i];
                     stuff.touched = this.inRect(point,stuff);
-                    stuff.scale = this.inCircle(point,stuff);
+                    stuff.scale = this.inCircle(point,{x:stuff.curX+stuff.width,y:stuff.curY+stuff.height});
                     if(stuff.touched||stuff.scale) {
                         this.curStuff=stuff;
+                        if(stuff.touched) this.curStuff.touchedPoint = point;
+                        if(stuff.scale) this.curStuff.scalePoint = point;
                         console.log(stuff);
                         break;
                     }
@@ -117,61 +168,64 @@ module.exports = {
 
             },
             reloadCanvas:function(){
-                var context = wx.createContext()
+                var that = this;
+                var context = wx.createContext();
                 
                 context.translate(0,0);
-                var imgWidth = this.canvasWidth/750*app.globalData.window.width;
+                var imgWidth = that.canvasWidth/750*app.globalData.window.width;
                 context.drawImage(
-                    this.backgroundImage,
+                    that.backgroundImage,
                     0,
                     0,
                     imgWidth,
-                    imgWidth*this.bgHeight/this.bgWidth,
+                    imgWidth*that.bgHeight/that.bgWidth
                 );
 
-                for(var i=0;i<this.stuffs.length;i++){
-                    var stuff = this.stuffs[i];
+                for(var i=0;i<that.stuffs.length;i++){
+                    var stuff = that.stuffs[i];
 
                     console.log(stuff);
+
+
+                    
                     context.beginPath()
                     context.translate(
                         stuff.centerX,
                         stuff.centerY);
-                    context.rotate(stuff.degree);
+                    if(that.curStuff==stuff)context.rotate(stuff.degree);
                     context.translate(
                         -stuff.width/2,
                         -stuff.height/2);
 
-
-                    context.setFillStyle("#ff0000");
-                    context.setStrokeStyle("#ff0000");
-                    context.arc(0,0,10,0,2*Math.PI);
-                    context.fill();
-                    context.stroke();
+                    context.setFillStyle(that.curStuff==stuff?"#ff0000":"#ffffff");
+                    context.setStrokeStyle("#000000");
+                    if(that.curStuff==stuff)context.arc(0,0,10,0,2*Math.PI);
+                    if(that.curStuff==stuff)context.fill();
+                    if(that.curStuff==stuff)context.stroke();
 
                     context.translate(
                         stuff.width,
                         stuff.height);
 
-                    context.arc(0,0,10,0,2*Math.PI);
-                    context.fill();
-                    context.stroke();
-                    context.closePath();
+                    if(that.curStuff==stuff)context.arc(0,0,10,0,2*Math.PI);
+                    if(that.curStuff==stuff)context.fill();
+                    if(that.curStuff==stuff)context.stroke();
 
-
-                    context.beginPath();
-                    context.setStrokeStyle("#ff0000");
-                    context.setFillStyle("#ff0000");
                     context.translate(
                         -stuff.width,
                         -stuff.height);
 
-                    context.rect(
+                    if(that.curStuff==stuff)context.rect(
                         0,0,
                         stuff.width,
                         stuff.height
                         );
-                    context.stroke();
+                    if(that.curStuff==stuff)context.stroke();
+                    context.closePath();
+
+
+                    context.beginPath();
+
                     context.drawImage(
                         stuff.imgsrc,
                         0,0,
@@ -189,7 +243,7 @@ module.exports = {
                 
 
                 wx.drawCanvas({
-                    canvasId: this.canvasId,
+                    canvasId: that.canvasId,
                     actions: context.getActions()
                 });
             },
@@ -206,6 +260,8 @@ module.exports = {
                 if(this.curStuff){
                     this.curStuff.touched = false;
                     this.curStuff.scale = false;
+                    this.curStuff.touchedPoint = false;
+                    this.curStuff.scalePoint = false;
                     this.curStuff = false;
                 }
             }
