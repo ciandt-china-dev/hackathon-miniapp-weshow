@@ -42,27 +42,22 @@ module.exports = {
                 console.log("saveFile");
                 var that = this;
                 that.toggleCanvasWidth(true);
-                wx.showActionSheet({
-                    itemList: ['保存图片'],
-                    success: function(res) {
-                        if (!res.cancel) {
-                            wx.canvasToTempFilePath({
-                            canvasId: that.canvasId,
-                            success: function(res){
-                                console.log(res);
-                                var filePath = res.tempFilePath;
-                                wx.previewImage({
-                                    current: filePath, // 当前显示图片的http链接
-                                    urls: [filePath] // 需要预览的图片http链接列表
-                                })
-                            },
-                            fail: function() {
-                                wx.showToast("保存图片失败");
-                            }
-                            })
-                        }
+                
+                wx.canvasToTempFilePath({
+                    canvasId: that.canvasId,
+                    success: function(res){
+                        console.log(res);
+                        var filePath = res.tempFilePath;
+                        wx.previewImage({
+                            current: filePath, // 当前显示图片的http链接
+                            urls: [filePath] // 需要预览的图片http链接列表
+                        })
+                    },
+                    fail: function() {
+                        wx.showToast("保存图片失败");
                     }
-                });
+                })
+            
             },
             tryDelCurStuff:function(point){
                 var that = this;
@@ -90,8 +85,39 @@ module.exports = {
             },
             changeBackGroundImage:function(){
                 var that = this;
-                wx.showActionSheet({
-                        itemList: [that.backgroundImage?'换一张图片？':'请选择一张照片，一起微秀','保存图片'],
+                var action = that.backgroundImage?[]:[];
+                if(!that.backgoundImage){
+                    wx.showModal({
+                        title: '微秀',
+                        content: that.backgroundImage ? '换一张图片？' : '请选择一张照片，一起微秀',
+                        success: function(res) {
+                            if (res.confirm)
+                                wx.chooseImage({
+                                    count: 1, // 最多可以选择的图片张数，默认9
+                                    sizeType: ['compressed'],
+                                    sourceType: ['album', 'camera'],
+                                    complete: function(e) {
+                                        if (!e.tempFilePaths) {
+                                            return;
+                                        }
+                                        that.backgroundImage = e.tempFilePaths[0];
+                                        wx.getImageInfo({
+                                            src: that.backgroundImage,
+                                            success: function (res) {
+                                                that.bgWidth=res.width;
+                                                that.bgHeight=res.height;
+                                            }
+                                        });
+                                        setTimeout(function(){
+                                            that.update();
+                                        },1000)
+                                    }
+                                })
+                        }
+                    });
+                }else{
+                    wx.showActionSheet({
+                        itemList: ['换一张图片？','保存图片'],
                         success: function(res) {
                             if(!res.cancel){
                                 if(res.tapIndex==0){
@@ -122,6 +148,8 @@ module.exports = {
                             }
                         }
                     });
+                }
+                
             },
             addStuff:function(imgsrc,centerX,centerY,width,height){
                 var that = this;
