@@ -9,6 +9,7 @@ module.exports = {
             backgroundImage:"",
             lastUpdate:0,
             page:null,
+            touchMoved:false,
 
             stuffs:[
             // {
@@ -38,22 +39,30 @@ module.exports = {
                 this.update();
             },
             saveFile:function(){
+                console.log("saveFile");
                 var that = this;
-                wx.canvasToTempFilePath({
-                  canvasId: that.canvasId,
-                  success: function(res){
-                      console.log(res);
-                      var filePath = res.tempFilePath[0];
-                    wx.previewImage({
-                        current: filePath, // 当前显示图片的http链接
-                        urls: [filePath] // 需要预览的图片http链接列表
-                    })
-                  },
-                  fail: function() {
-                     wx.showToast("保存图片失败");
-                  }
-                })
-                
+                that.toggleCanvasWidth(true);
+                wx.showActionSheet({
+                    itemList: ['保存图片'],
+                    success: function(res) {
+                        if (!res.cancel) {
+                            wx.canvasToTempFilePath({
+                            canvasId: that.canvasId,
+                            success: function(res){
+                                console.log(res);
+                                var filePath = res.tempFilePath;
+                                wx.previewImage({
+                                    current: filePath, // 当前显示图片的http链接
+                                    urls: [filePath] // 需要预览的图片http链接列表
+                                })
+                            },
+                            fail: function() {
+                                wx.showToast("保存图片失败");
+                            }
+                            })
+                        }
+                    }
+                });
             },
             tryDelCurStuff:function(point){
                 var that = this;
@@ -81,29 +90,36 @@ module.exports = {
             },
             changeBackGroundImage:function(){
                 var that = this;
-                wx.showModal({
-                    title: '微秀',
-                    content: that.backgroundImage?'换一张图片？':'请选择一张照片，一起微秀',
-                    success: function(res) {
-                        if(res.confirm)
-                        wx.chooseImage({
-                            count: 1, // 最多可以选择的图片张数，默认9
-                            sizeType: ['original', 'compressed'],
-                            sourceType: ['album', 'camera'],
-                            complete: function(e) {
-                                if(!e.tempFilePaths){
-                                    return;
+                wx.showActionSheet({
+                        itemList: [that.backgroundImage?'换一张图片？':'请选择一张照片，一起微秀','保存图片'],
+                        success: function(res) {
+                            if(!res.cancel){
+                                if(res.tapIndex==0){
+                                    wx.chooseImage({
+                                        count: 1, // 最多可以选择的图片张数，默认9
+                                        sizeType: ['original', 'compressed'],
+                                        sourceType: ['album', 'camera'],
+                                        complete: function(e) {
+                                            if(!e.tempFilePaths){
+                                                return;
+                                            }
+                                            that.backgroundImage = e.tempFilePaths[0];
+                                            wx.getImageInfo({
+                                                src: that.backgroundImage,
+                                                success: function (res) {
+                                                    that.bgWidth=res.width;
+                                                    that.bgHeight=res.height;
+                                                }
+                                            });
+                                            setTimeout(function(){
+                                                that.update();
+                                            },1000)
+                                        }
+                                    })
+                                }else if(res.tapIndex==1){
+                                    that.saveFile();
                                 }
-                                that.backgroundImage = e.tempFilePaths[0];
-                                wx.getImageInfo({
-                                    src: that.backgroundImage,
-                                    success: function (res) {
-                                        that.bgWidth=res.width;
-                                        that.bgHeight=res.height;
-                                    }
-                                });
                             }
-                            })
                         }
                     });
             },
@@ -263,6 +279,7 @@ module.exports = {
                     this.curStuff.touchedPoint = false;
                     this.curStuff.scalePoint = false;
                     this.curStuff = false;
+                    this.touchMoved = false;
                 }
             }
 

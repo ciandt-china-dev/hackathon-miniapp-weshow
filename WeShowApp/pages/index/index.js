@@ -64,6 +64,7 @@ Page({
     glass.update();
   },
   touchmove:function(e){
+    glass.touchMoved=true;
     var point = e.changedTouches[0];
     if(glass.curStuff){
       if(glass.curStuff.scale){
@@ -90,7 +91,7 @@ Page({
         glass.changeBackGroundImage();
       }
       
-    }else if(pressTime>2000){
+    }else if(!glass.touchMoved&&pressTime>1000){
       glass.saveFile();
     }
     glass.touchEnd();
